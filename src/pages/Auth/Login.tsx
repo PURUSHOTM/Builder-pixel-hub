@@ -48,14 +48,32 @@ export function Login() {
         </p>
       </div>
 
-      {/* Demo credentials */}
-      <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <div className="text-sm text-blue-800 dark:text-blue-200">
-          <div className="font-semibold mb-2">Demo Account:</div>
-          <div>Email: demo@contractpro.com</div>
-          <div>Password: demo123</div>
+      {/* Demo mode notification */}
+      {import.meta.env.VITE_DEMO_MODE !== "false" && (
+        <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div className="text-sm text-green-800 dark:text-green-200">
+            <div className="font-semibold mb-2">🚀 Demo Mode Active</div>
+            <div>
+              No backend required! Login with any credentials to explore the
+              app.
+            </div>
+            <div className="mt-2 text-xs opacity-75">
+              Suggested: demo@contractpro.com / demo123
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Demo credentials for production mode */}
+      {import.meta.env.VITE_DEMO_MODE === "false" && (
+        <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="text-sm text-blue-800 dark:text-blue-200">
+            <div className="font-semibold mb-2">Demo Account:</div>
+            <div>Email: demo@contractpro.com</div>
+            <div>Password: demo123</div>
+          </div>
+        </div>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
