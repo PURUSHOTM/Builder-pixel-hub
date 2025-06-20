@@ -56,9 +56,9 @@ const revenueData = [
 ];
 
 const contractStatusData = [
-  { name: "Signed", value: 8, color: "#22c55e" },
-  { name: "Pending", value: 5, color: "#f59e0b" },
-  { name: "Draft", value: 2, color: "#94a3b8" },
+  { name: "Signed", value: 8, color: "#059669" },
+  { name: "Pending", value: 5, color: "#d97706" },
+  { name: "Draft", value: 2, color: "#64748b" },
 ];
 
 const recentActivity = [
@@ -211,20 +211,20 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-orange-500">
+        <Card className="border-l-4 border-l-amber-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-slate-600">
               Pending Invoices
             </CardTitle>
-            <Receipt className="h-5 w-5 text-orange-600" />
+            <Receipt className="h-5 w-5 text-amber-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-slate-900 dark:text-white">
               {stats.pendingInvoices}
             </div>
             <div className="flex items-center gap-1 text-sm">
-              <Clock className="h-4 w-4 text-orange-600" />
-              <span className="text-orange-600 font-medium">
+              <Clock className="h-4 w-4 text-amber-600" />
+              <span className="text-amber-600 font-medium">
                 {stats.overdueInvoices} overdue
               </span>
             </div>
@@ -272,8 +272,8 @@ export function Dashboard() {
                 />
                 <defs>
                   <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#60a5fa" />
+                    <stop offset="0%" stopColor="#1e40af" />
+                    <stop offset="100%" stopColor="#3b82f6" />
                   </linearGradient>
                 </defs>
               </BarChart>
