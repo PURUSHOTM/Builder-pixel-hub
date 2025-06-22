@@ -44,15 +44,12 @@ export function Header() {
           <Menu className="w-5 h-5" />
         </Button>
         <div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              {currentTitle}
-            </h1>
-          </div>
+          <h1 className="text-2xl font-bold text-foreground">{currentTitle}</h1>
           <p className="text-sm text-muted-foreground">
             Welcome back, {user?.name?.split(" ")[0]}
           </p>
         </div>
+      </div>
 
       {/* Right section */}
       <div className="flex items-center gap-4">
