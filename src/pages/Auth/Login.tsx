@@ -48,15 +48,6 @@ export function Login() {
         </p>
       </div>
 
-      {/* Demo credentials info */}
-      <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <div className="text-sm text-blue-800 dark:text-blue-200">
-          <div className="font-semibold mb-2">Demo Account:</div>
-          <div>Email: demo@contractpro.com</div>
-          <div>Password: demo123</div>
-        </div>
-      </div>
-
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Email */}

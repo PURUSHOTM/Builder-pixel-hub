@@ -48,14 +48,6 @@ export function Header() {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               {currentTitle}
             </h1>
-            {import.meta.env.VITE_DEMO_MODE !== "false" && (
-              <Badge
-                variant="secondary"
-                className="text-xs bg-green-100 text-green-700 border-green-200"
-              >
-                Demo Mode
-              </Badge>
-            )}
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Welcome back, {user?.name?.split(" ")[0]}

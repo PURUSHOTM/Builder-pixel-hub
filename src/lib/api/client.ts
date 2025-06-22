@@ -4,8 +4,8 @@ import { ApiResponse, PaginatedResponse } from "../types";
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
-// Demo mode configuration
-const DEMO_MODE = import.meta.env.VITE_DEMO_MODE !== "false"; // Default to true for development
+// Demo mode configuration - always disabled for production use
+const DEMO_MODE = false;
 
 // Request/Response Interceptors
 type RequestInterceptor = (
