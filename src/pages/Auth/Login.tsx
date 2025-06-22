@@ -25,12 +25,43 @@ export function Login() {
   const onSubmit = async (data: LoginCredentials) => {
     try {
       setIsLoading(true);
+
+      // Clear any previous errors
+      setError("root", { message: "" });
+
       await login(data);
       navigate("/dashboard");
     } catch (error: any) {
+      // Prevent the error from causing a page reload
+      error.preventDefault?.();
+
+      console.error("Login error:", error);
+
+      // Set form error for display
+      let errorMessage = "Login failed. Please try again.";
+
+      if (error.message?.includes("Invalid email or password")) {
+        errorMessage =
+          "Invalid email or password. Please check your credentials.";
+      } else if (
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("Network")
+      ) {
+        errorMessage =
+          "Unable to connect to server. Please check your internet connection.";
+      } else if (error.message?.includes("Account is deactivated")) {
+        errorMessage =
+          "Your account has been deactivated. Please contact support.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setError("root", {
-        message: error.message || "Login failed. Please try again.",
+        message: errorMessage,
       });
+
+      // The auth context already shows toast notifications,
+      // but we'll ensure the form also shows the error
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +80,17 @@ export function Login() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+        noValidate
+        onKeyDown={(e) => {
+          // Prevent form submission on Enter if there are validation errors
+          if (e.key === "Enter" && Object.keys(errors).length > 0) {
+            e.preventDefault();
+          }
+        }}
+      >
         {/* Email */}
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-medium">
@@ -66,8 +107,12 @@ export function Login() {
             {...register("email", {
               required: "Email is required",
               pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Please enter a valid email",
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Please enter a valid email address",
+              },
+              validate: {
+                notEmpty: (value) =>
+                  value.trim().length > 0 || "Email cannot be empty",
               },
             })}
           />
@@ -97,6 +142,10 @@ export function Login() {
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
+                },
+                validate: {
+                  notEmpty: (value) =>
+                    value.trim().length > 0 || "Password cannot be empty",
                 },
               })}
             />

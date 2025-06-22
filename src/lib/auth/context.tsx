@@ -141,15 +141,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Better error messages for different scenarios
       let errorMessage = "Login failed. Please try again.";
 
-      if (error.message?.includes("Failed to fetch")) {
+      // Handle specific API errors
+      if (error.status === 401) {
         errorMessage =
-          "Unable to connect to server. Please check your connection.";
-      } else if (error.message) {
+          "Invalid email or password. Please check your credentials.";
+      } else if (error.status === 400) {
+        errorMessage =
+          error.data?.error || "Invalid request. Please check your input.";
+      } else if (error.status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (
+        error.message?.includes("Failed to fetch") ||
+        error.name === "TypeError"
+      ) {
+        errorMessage =
+          "Unable to connect to server. Please check your internet connection.";
+      } else if (error.message?.includes("Invalid email or password")) {
+        errorMessage =
+          "Invalid email or password. Please check your credentials.";
+      } else if (error.message?.includes("Account is deactivated")) {
+        errorMessage =
+          "Your account has been deactivated. Please contact support.";
+      } else if (error.message && typeof error.message === "string") {
         errorMessage = error.message;
       }
 
       toast.error(errorMessage);
-      throw error;
+
+      // Create a safe error object to throw
+      const safeError = new Error(errorMessage);
+      safeError.name = "LoginError";
+      throw safeError;
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
