@@ -68,19 +68,6 @@ export function Signup() {
         </p>
       </div>
 
-      {/* Demo mode notification */}
-      {import.meta.env.VITE_DEMO_MODE !== "false" && (
-        <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg p-4">
-          <div className="text-sm text-green-800 dark:text-green-200">
-            <div className="font-semibold mb-2">🚀 Demo Mode Active</div>
-            <div>
-              No backend required! Create an account with any details to explore
-              the app.
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Name */}
