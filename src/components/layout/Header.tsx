@@ -52,18 +52,28 @@ export function Header() {
       </div>
 
       {/* Right section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         {/* Search */}
-        <div className="hidden md:block relative">
+        <div className="hidden lg:block relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search..."
-            className="pl-10 w-64 bg-muted border-border"
+            className="pl-10 w-48 xl:w-64 bg-muted border-border"
           />
         </div>
 
+        {/* Search button for mobile/tablet */}
+        <Button variant="ghost" size="sm" className="lg:hidden">
+          <Search className="w-5 h-5" />
+        </Button>
+
         {/* Theme toggle */}
-        <Button variant="ghost" size="sm" onClick={toggleTheme}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleTheme}
+          className="hidden sm:flex"
+        >
           {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
         </Button>
 
@@ -71,13 +81,16 @@ export function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="relative">
-              <Bell className="w-5 h-5" />
-              <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-red-500 text-white">
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Badge className="absolute -top-1 -right-1 h-3 w-3 sm:h-4 sm:w-4 p-0 text-[10px] sm:text-xs bg-red-500 text-white flex items-center justify-center">
                 3
               </Badge>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-80">
+          <DropdownMenuContent
+            align="end"
+            className="w-80 max-w-[calc(100vw-2rem)]"
+          >
             <DropdownMenuLabel className="font-semibold">
               Notifications
             </DropdownMenuLabel>
@@ -113,19 +126,24 @@ export function Header() {
         {/* User menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-xs font-semibold text-primary-foreground">
+            <Button
+              variant="ghost"
+              className="relative h-7 w-7 sm:h-8 sm:w-8 rounded-full p-0"
+            >
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-xs sm:text-sm font-semibold text-primary-foreground">
                   {user?.name?.charAt(0).toUpperCase()}
                 </span>
               </div>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">
+                <p className="text-sm font-medium leading-none truncate">
+                  {user?.name}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground truncate">
                   {user?.email}
                 </p>
               </div>
