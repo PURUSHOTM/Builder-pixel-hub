@@ -459,9 +459,15 @@ export function Clients() {
             Manage your client relationships and contact information
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <Dialog
+          open={isCreateDialogOpen}
+          onOpenChange={handleCreateDialogClose}
+        >
           <DialogTrigger asChild>
-            <Button className="gap-2 bg-primary hover:bg-primary/90">
+            <Button
+              className="gap-2 bg-primary hover:bg-primary/90"
+              aria-label="Add Client"
+            >
               <Plus className="w-4 h-4" />
               Add Client
             </Button>
