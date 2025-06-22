@@ -37,20 +37,20 @@ export function Header() {
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between px-6">
+    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
       {/* Left section */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" className="lg:hidden">
           <Menu className="w-5 h-5" />
         </Button>
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
               {currentTitle}
             </h1>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Welcome back, {user?.name?.split(" ")[0]}
+          </p>
           </p>
         </div>
       </div>
@@ -59,10 +59,10 @@ export function Header() {
       <div className="flex items-center gap-4">
         {/* Search */}
         <div className="hidden md:block relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             placeholder="Search..."
-            className="pl-10 w-64 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600"
+            className="pl-10 w-64 bg-muted border-border"
           />
         </div>
 
@@ -108,7 +108,7 @@ export function Header() {
               <div className="text-xs text-slate-400 mt-1">3 days ago</div>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-center text-sm text-blue-600 hover:text-blue-700">
+            <DropdownMenuItem className="text-center text-sm text-primary hover:text-primary/80">
               View all notifications
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -118,8 +118,8 @@ export function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
-                <span className="text-xs font-semibold text-white">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-xs font-semibold text-primary-foreground">
                   {user?.name?.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -129,7 +129,7 @@ export function Header() {
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="text-xs leading-none text-slate-500">
+                <p className="text-xs leading-none text-muted-foreground">
                   {user?.email}
                 </p>
               </div>
