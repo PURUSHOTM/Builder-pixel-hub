@@ -43,6 +43,7 @@ export function Header() {
         <Button variant="ghost" size="sm" className="lg:hidden">
           <Menu className="w-5 h-5" />
         </Button>
+        <div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">
               {currentTitle}
@@ -51,9 +52,7 @@ export function Header() {
           <p className="text-sm text-muted-foreground">
             Welcome back, {user?.name?.split(" ")[0]}
           </p>
-          </p>
         </div>
-      </div>
 
       {/* Right section */}
       <div className="flex items-center gap-4">
