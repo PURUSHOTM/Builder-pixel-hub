@@ -15,14 +15,12 @@ export function Invoices() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Invoices
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Invoices</h1>
+          <p className="text-muted-foreground mt-1">
             Generate and track invoices with automated reminders
           </p>
         </div>
-        <Button className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700">
+        <Button className="gap-2 bg-primary hover:bg-primary/90">
           <Plus className="w-4 h-4" />
           New Invoice
         </Button>
@@ -31,7 +29,7 @@ export function Invoices() {
       {/* Search and Filters */}
       <div className="flex gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input placeholder="Search invoices..." className="pl-10" />
         </div>
         <Button variant="outline" className="gap-2">
@@ -50,11 +48,11 @@ export function Invoices() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-12">
-            <Receipt className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+            <Receipt className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               Invoice Management Coming Soon
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+            <p className="text-muted-foreground max-w-md mx-auto">
               This feature will include invoice generation, automated payment
               reminders, and PDF export functionality.
             </p>
