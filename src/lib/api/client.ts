@@ -245,16 +245,20 @@ class ApiClient {
     endpoint: string,
     params?: Record<string, any>,
   ): Promise<ApiResponse<T>> {
-    const url = new URL(`${this.baseUrl}${endpoint}`);
+    let url = endpoint;
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value));
+          searchParams.append(key, String(value));
         }
       });
+      if (searchParams.toString()) {
+        url += `?${searchParams.toString()}`;
+      }
     }
 
-    return this.request<T>(url.pathname + url.search);
+    return this.request<T>(url);
   }
 
   async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
