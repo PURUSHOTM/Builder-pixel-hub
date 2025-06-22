@@ -834,7 +834,7 @@ export function Clients() {
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
+        onOpenChange={handleDeleteDialogClose}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
