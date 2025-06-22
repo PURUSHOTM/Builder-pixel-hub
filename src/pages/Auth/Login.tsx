@@ -80,7 +80,17 @@ export function Login() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+        noValidate
+        onKeyDown={(e) => {
+          // Prevent form submission on Enter if there are validation errors
+          if (e.key === "Enter" && Object.keys(errors).length > 0) {
+            e.preventDefault();
+          }
+        }}
+      >
         {/* Email */}
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-medium">
