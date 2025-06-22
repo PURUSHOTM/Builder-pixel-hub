@@ -165,8 +165,7 @@ export function Clients() {
 
       if (response.success) {
         toast.success("Client created successfully");
-        setIsCreateDialogOpen(false);
-        setFormData(initialFormData);
+        handleCreateDialogClose(false);
         fetchClients();
       }
     } catch (error: any) {
