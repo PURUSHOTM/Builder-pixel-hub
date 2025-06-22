@@ -187,10 +187,19 @@ class ApiClient {
         response = await interceptor(response);
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        // Handle cases where response is not valid JSON
+        data = {
+          message: response.statusText || "Request failed",
+          error: "Invalid response format",
+        };
+      }
 
       if (!response.ok) {
-        const error = new Error(data.message || "Request failed");
+        const error = new Error(data.error || data.message || "Request failed");
         (error as any).status = response.status;
         (error as any).data = data;
         throw error;
@@ -208,9 +217,24 @@ class ApiClient {
         return this.getMockResponse<T>(endpoint, options.method || "GET");
       }
 
+      // Handle network errors gracefully
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        const networkError = new Error(
+          "Unable to connect to server. Please check your internet connection.",
+        );
+        (networkError as any).status = 0;
+        (networkError as any).name = "NetworkError";
+        error = networkError;
+      }
+
       // Apply error interceptors
       for (const interceptor of this.errorInterceptors) {
-        error = await interceptor(error);
+        try {
+          error = await interceptor(error);
+        } catch (interceptorError) {
+          // If interceptor fails, use original error
+          console.warn("Error interceptor failed:", interceptorError);
+        }
       }
       throw error;
     }
