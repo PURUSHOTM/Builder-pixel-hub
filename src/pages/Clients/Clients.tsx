@@ -188,9 +188,7 @@ export function Clients() {
 
       if (response.success) {
         toast.success("Client updated successfully");
-        setIsEditDialogOpen(false);
-        setSelectedClient(null);
-        setFormData(initialFormData);
+        handleEditDialogClose(false);
         fetchClients();
       }
     } catch (error: any) {
