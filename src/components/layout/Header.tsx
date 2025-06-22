@@ -26,7 +26,7 @@ const pageTitles: Record<string, string> = {
 
 export function Header() {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isDark, setIsDark] = React.useState(false);
 
   const currentTitle = pageTitles[location.pathname] || "Dashboard";
@@ -139,7 +139,7 @@ export function Header() {
             <DropdownMenuItem>Billing</DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
