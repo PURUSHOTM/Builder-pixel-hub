@@ -309,144 +309,153 @@ export function Clients() {
     return parts.length > 0 ? parts.join(", ") : "No address provided";
   };
 
-  const ClientForm = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name *</Label>
-          <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="John Doe"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email *</Label>
-          <Input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-            placeholder="john@example.com"
-          />
-        </div>
-      </div>
+  // Optimized form field handlers to prevent focus loss
+  const handleFormFieldChange = React.useCallback(
+    (field: string, value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    },
+    [],
+  );
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="company">Company *</Label>
-          <Input
-            id="company"
-            value={formData.company}
-            onChange={(e) =>
-              setFormData({ ...formData, company: e.target.value })
-            }
-            placeholder="Acme Corp"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
-            placeholder="+1 234 567 8900"
-          />
-        </div>
-      </div>
+  const handleAddressFieldChange = React.useCallback(
+    (field: string, value: string) => {
+      setFormData((prev) => ({
+        ...prev,
+        address: { ...prev.address, [field]: value },
+      }));
+    },
+    [],
+  );
 
+  const ClientForm = React.useCallback(
+    () => (
       <div className="space-y-4">
-        <h4 className="font-medium">Address</h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Full Name *</Label>
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleFormFieldChange("name", e.target.value)}
+              placeholder="John Doe"
+              autoComplete="name"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email *</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleFormFieldChange("email", e.target.value)}
+              placeholder="john@example.com"
+              autoComplete="email"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="company">Company *</Label>
+            <Input
+              id="company"
+              value={formData.company}
+              onChange={(e) => handleFormFieldChange("company", e.target.value)}
+              placeholder="Acme Corp"
+              autoComplete="organization"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={(e) => handleFormFieldChange("phone", e.target.value)}
+              placeholder="+1 234 567 8900"
+              autoComplete="tel"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h4 className="font-medium">Address</h4>
+          <div className="space-y-2">
+            <Label htmlFor="street">Street Address</Label>
+            <Input
+              id="street"
+              value={formData.address.street}
+              onChange={(e) =>
+                handleAddressFieldChange("street", e.target.value)
+              }
+              placeholder="123 Main St"
+              autoComplete="street-address"
+            />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="city">City</Label>
+              <Input
+                id="city"
+                value={formData.address.city}
+                onChange={(e) =>
+                  handleAddressFieldChange("city", e.target.value)
+                }
+                placeholder="San Francisco"
+                autoComplete="address-level2"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="state">State</Label>
+              <Input
+                id="state"
+                value={formData.address.state}
+                onChange={(e) =>
+                  handleAddressFieldChange("state", e.target.value)
+                }
+                placeholder="CA"
+                autoComplete="address-level1"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="zipCode">ZIP Code</Label>
+              <Input
+                id="zipCode"
+                value={formData.address.zipCode}
+                onChange={(e) =>
+                  handleAddressFieldChange("zipCode", e.target.value)
+                }
+                placeholder="94105"
+                autoComplete="postal-code"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Input
+                id="country"
+                value={formData.address.country}
+                onChange={(e) =>
+                  handleAddressFieldChange("country", e.target.value)
+                }
+                placeholder="United States"
+                autoComplete="country-name"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-2">
-          <Label htmlFor="street">Street Address</Label>
-          <Input
-            id="street"
-            value={formData.address.street}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                address: { ...formData.address, street: e.target.value },
-              })
-            }
-            placeholder="123 Main St"
+          <Label htmlFor="notes">Notes</Label>
+          <Textarea
+            id="notes"
+            value={formData.notes}
+            onChange={(e) => handleFormFieldChange("notes", e.target.value)}
+            placeholder="Additional notes about this client..."
+            rows={3}
           />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input
-              id="city"
-              value={formData.address.city}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, city: e.target.value },
-                })
-              }
-              placeholder="San Francisco"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="state">State</Label>
-            <Input
-              id="state"
-              value={formData.address.state}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, state: e.target.value },
-                })
-              }
-              placeholder="CA"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="zipCode">ZIP Code</Label>
-            <Input
-              id="zipCode"
-              value={formData.address.zipCode}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, zipCode: e.target.value },
-                })
-              }
-              placeholder="94105"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="country">Country</Label>
-            <Input
-              id="country"
-              value={formData.address.country}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, country: e.target.value },
-                })
-              }
-              placeholder="United States"
-            />
-          </div>
-        </div>
       </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea
-          id="notes"
-          value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          placeholder="Additional notes about this client..."
-          rows={3}
-        />
-      </div>
-    </div>
+    ),
+    [formData, handleFormFieldChange, handleAddressFieldChange],
   );
 
   return (
