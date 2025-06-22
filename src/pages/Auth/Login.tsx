@@ -133,6 +133,10 @@ export function Login() {
                   value: 6,
                   message: "Password must be at least 6 characters",
                 },
+                validate: {
+                  notEmpty: (value) =>
+                    value.trim().length > 0 || "Password cannot be empty",
+                },
               })}
             />
             <Button
