@@ -748,7 +748,11 @@ export function Clients() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={handleEditDialogClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent
+          className="max-w-2xl max-h-[90vh] overflow-y-auto"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={() => handleEditDialogClose(false)}
+        >
           <DialogHeader>
             <DialogTitle>Edit Client</DialogTitle>
           </DialogHeader>
