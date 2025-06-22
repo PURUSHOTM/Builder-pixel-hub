@@ -477,7 +477,11 @@ export function Clients() {
               Add Client
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent
+            className="max-w-2xl max-h-[90vh] overflow-y-auto"
+            onPointerDownOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={() => handleCreateDialogClose(false)}
+          >
             <DialogHeader>
               <DialogTitle>Add New Client</DialogTitle>
             </DialogHeader>
