@@ -208,8 +208,7 @@ export function Clients() {
 
       if (response.success) {
         toast.success("Client deleted successfully");
-        setIsDeleteDialogOpen(false);
-        setSelectedClient(null);
+        handleDeleteDialogClose(false);
         fetchClients();
       }
     } catch (error: any) {
