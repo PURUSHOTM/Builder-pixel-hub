@@ -97,8 +97,12 @@ export function Login() {
             {...register("email", {
               required: "Email is required",
               pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Please enter a valid email",
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Please enter a valid email address",
+              },
+              validate: {
+                notEmpty: (value) =>
+                  value.trim().length > 0 || "Email cannot be empty",
               },
             })}
           />
