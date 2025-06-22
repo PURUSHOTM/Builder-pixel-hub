@@ -773,7 +773,10 @@ export function Clients() {
 
       {/* View Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={handleViewDialogClose}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent
+          className="max-w-2xl"
+          onEscapeKeyDown={() => handleViewDialogClose(false)}
+        >
           <DialogHeader>
             <DialogTitle>Client Details</DialogTitle>
           </DialogHeader>
