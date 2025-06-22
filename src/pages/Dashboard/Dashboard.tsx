@@ -382,15 +382,14 @@ export function Dashboard() {
               {upcomingDeadlines.map((deadline) => (
                 <div
                   key={deadline.id}
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted">
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted"
+                >
                   <div>
                     <p className="text-sm font-medium text-foreground">
                       {deadline.title}
                     </p>
                     <p className="text-sm text-muted-foreground">{deadline.client}</p>
                   </div>
-                  </div>
-                </div>
               ))}
             </div>
             <Button variant="ghost" className="w-full mt-4">
