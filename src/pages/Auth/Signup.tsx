@@ -60,10 +60,10 @@ export function Signup() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold text-foreground">
           Create your account
         </h1>
-        <p className="text-slate-600 dark:text-slate-300">
+        <p className="text-muted-foreground">
           Get started with your free account today
         </p>
       </div>
@@ -81,7 +81,7 @@ export function Signup() {
             placeholder="Enter your full name"
             className={cn(
               "w-full h-11",
-              errors.name && "border-red-500 focus:ring-red-500",
+              errors.name && "border-destructive focus:ring-destructive",
             )}
             {...register("name", {
               required: "Name is required",
@@ -92,9 +92,7 @@ export function Signup() {
             })}
           />
           {errors.name && (
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {errors.name.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.name.message}</p>
           )}
         </div>
 
@@ -109,7 +107,7 @@ export function Signup() {
             placeholder="Enter your email"
             className={cn(
               "w-full h-11",
-              errors.email && "border-red-500 focus:ring-red-500",
+              errors.email && "border-destructive focus:ring-destructive",
             )}
             {...register("email", {
               required: "Email is required",
@@ -120,9 +118,7 @@ export function Signup() {
             })}
           />
           {errors.email && (
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {errors.email.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.email.message}</p>
           )}
         </div>
 
@@ -138,7 +134,7 @@ export function Signup() {
               placeholder="Create a password"
               className={cn(
                 "w-full h-11 pr-10",
-                errors.password && "border-red-500 focus:ring-red-500",
+                errors.password && "border-destructive focus:ring-destructive",
               )}
               {...register("password", {
                 required: "Password is required",
@@ -166,9 +162,9 @@ export function Signup() {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOff className="h-4 w-4 text-slate-400" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4 text-slate-400" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
             </Button>
           </div>
@@ -183,9 +179,7 @@ export function Signup() {
                     key={index}
                     className={cn(
                       "flex items-center gap-2 text-xs",
-                      isValid
-                        ? "text-green-600 dark:text-green-400"
-                        : "text-slate-500",
+                      isValid ? "text-green-600" : "text-muted-foreground",
                     )}
                   >
                     <Check
@@ -202,7 +196,7 @@ export function Signup() {
           )}
 
           {errors.password && (
-            <p className="text-sm text-red-600 dark:text-red-400">
+            <p className="text-sm text-destructive">
               {errors.password.message}
             </p>
           )}
@@ -220,7 +214,8 @@ export function Signup() {
               placeholder="Confirm your password"
               className={cn(
                 "w-full h-11 pr-10",
-                errors.confirmPassword && "border-red-500 focus:ring-red-500",
+                errors.confirmPassword &&
+                  "border-destructive focus:ring-destructive",
               )}
               {...register("confirmPassword", {
                 required: "Please confirm your password",
@@ -236,14 +231,14 @@ export function Signup() {
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-4 w-4 text-slate-400" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4 text-slate-400" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
             </Button>
           </div>
           {errors.confirmPassword && (
-            <p className="text-sm text-red-600 dark:text-red-400">
+            <p className="text-sm text-destructive">
               {errors.confirmPassword.message}
             </p>
           )}
@@ -257,18 +252,21 @@ export function Signup() {
             onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
             className="mt-1"
           />
-          <Label htmlFor="terms" className="text-sm text-slate-600 leading-5">
+          <Label
+            htmlFor="terms"
+            className="text-sm text-muted-foreground leading-5"
+          >
             I agree to the{" "}
             <Link
               to="/terms"
-              className="text-blue-600 hover:text-blue-500 font-medium"
+              className="text-primary hover:text-primary/80 font-medium"
             >
               Terms of Service
             </Link>{" "}
             and{" "}
             <Link
               to="/privacy"
-              className="text-blue-600 hover:text-blue-500 font-medium"
+              className="text-primary hover:text-primary/80 font-medium"
             >
               Privacy Policy
             </Link>
@@ -277,10 +275,8 @@ export function Signup() {
 
         {/* Error message */}
         {errors.root && (
-          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {errors.root.message}
-            </p>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+            <p className="text-sm text-destructive">{errors.root.message}</p>
           </div>
         )}
 
@@ -288,7 +284,7 @@ export function Signup() {
         <Button
           type="submit"
           disabled={isLoading || !agreeToTerms}
-          className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
+          className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
         >
           {isLoading ? (
             <div className="flex items-center gap-2">
@@ -306,11 +302,11 @@ export function Signup() {
 
       {/* Sign in link */}
       <div className="text-center">
-        <p className="text-sm text-slate-600 dark:text-slate-300">
+        <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
             to="/auth/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-primary hover:text-primary/80"
           >
             Sign in
           </Link>
@@ -320,10 +316,10 @@ export function Signup() {
       {/* Social login */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-slate-50 dark:bg-slate-900 text-slate-500">
+          <span className="px-2 bg-background text-muted-foreground">
             Or continue with
           </span>
         </div>
