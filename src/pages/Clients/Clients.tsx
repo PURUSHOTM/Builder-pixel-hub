@@ -747,7 +747,7 @@ export function Clients() {
           <div className="flex justify-end gap-2 pt-4">
             <Button
               variant="outline"
-              onClick={() => setIsEditDialogOpen(false)}
+              onClick={() => handleEditDialogClose(false)}
             >
               Cancel
             </Button>
