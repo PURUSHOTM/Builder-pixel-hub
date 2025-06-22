@@ -388,8 +388,19 @@ export function Dashboard() {
                     <p className="text-sm font-medium text-foreground">
                       {deadline.title}
                     </p>
-                    <p className="text-sm text-muted-foreground">{deadline.client}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {deadline.client}
+                    </p>
                   </div>
+                  <div className="text-right">
+                    <Badge
+                      variant={deadline.urgent ? "destructive" : "secondary"}
+                      className="text-xs"
+                    >
+                      {deadline.date}
+                    </Badge>
+                  </div>
+                </div>
               ))}
             </div>
             <Button variant="ghost" className="w-full mt-4">
