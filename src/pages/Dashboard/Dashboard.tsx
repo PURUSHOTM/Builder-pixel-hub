@@ -133,10 +133,10 @@ export function Dashboard() {
       {/* Welcome Section */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-foreground">
             Welcome back! 👋
           </h1>
-          <p className="text-slate-600 dark:text-slate-300 mt-1">
+          <p className="text-muted-foreground mt-1">
             Here's what's happening with your business today.
           </p>
         </div>
@@ -145,7 +145,7 @@ export function Dashboard() {
             <Calendar className="w-4 h-4" />
             This Month
           </Button>
-          <Button className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700">
+          <Button className="gap-2 bg-primary hover:bg-primary/90">
             <Plus className="w-4 h-4" />
             Quick Actions
           </Button>
@@ -156,70 +156,70 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Revenue
             </CardTitle>
             <DollarSign className="h-5 w-5 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               ${stats.totalRevenue.toLocaleString()}
             </div>
             <div className="flex items-center gap-1 text-sm">
               <TrendingUp className="h-4 w-4 text-green-600" />
               <span className="text-green-600 font-medium">+12.5%</span>
-              <span className="text-slate-500">from last month</span>
+              <span className="text-muted-foreground">from last month</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-l-4 border-l-primary">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Monthly Revenue
             </CardTitle>
-            <TrendingUp className="h-5 w-5 text-blue-600" />
+            <TrendingUp className="h-5 w-5 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               ${stats.monthlyRevenue.toLocaleString()}
             </div>
             <div className="flex items-center gap-1 text-sm">
-              <TrendingUp className="h-4 w-4 text-blue-600" />
-              <span className="text-blue-600 font-medium">+8.2%</span>
-              <span className="text-slate-500">from last month</span>
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <span className="text-primary font-medium">+8.2%</span>
+              <span className="text-muted-foreground">from last month</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-purple-500">
+        <Card className="border-l-4 border-l-accent">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Clients
             </CardTitle>
-            <Users className="h-5 w-5 text-purple-600" />
+            <Users className="h-5 w-5 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               {stats.totalClients}
             </div>
             <div className="flex items-center gap-1 text-sm">
-              <TrendingUp className="h-4 w-4 text-purple-600" />
-              <span className="text-purple-600 font-medium">+3 new</span>
-              <span className="text-slate-500">this month</span>
+              <TrendingUp className="h-4 w-4 text-accent" />
+              <span className="text-accent font-medium">+3 new</span>
+              <span className="text-muted-foreground">this month</span>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-amber-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Pending Invoices
             </CardTitle>
             <Receipt className="h-5 w-5 text-amber-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               {stats.pendingInvoices}
             </div>
             <div className="flex items-center gap-1 text-sm">
@@ -272,8 +272,8 @@ export function Dashboard() {
                 />
                 <defs>
                   <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1e40af" />
-                    <stop offset="100%" stopColor="#3b82f6" />
+                    <stop offset="0%" stopColor="#5d4037" />
+                    <stop offset="100%" stopColor="#8d6e63" />
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -350,13 +350,13 @@ export function Dashboard() {
                     <activity.icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {activity.title}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       {activity.description}
                     </p>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {activity.time}
                     </p>
                   </div>
@@ -382,13 +382,15 @@ export function Dashboard() {
               {upcomingDeadlines.map((deadline) => (
                 <div
                   key={deadline.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800"
+                  className="flex items-center justify-between p-3 rounded-lg bg-muted"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {deadline.title}
                     </p>
-                    <p className="text-sm text-slate-500">{deadline.client}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {deadline.client}
+                    </p>
                   </div>
                   <div className="text-right">
                     <Badge
@@ -415,27 +417,27 @@ export function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Button className="h-20 flex flex-col gap-2 bg-gradient-to-r from-blue-600 to-blue-700">
+            <Button className="h-20 flex flex-col gap-2 bg-primary hover:bg-primary/90">
               <Plus className="w-5 h-5" />
               <span className="text-sm">New Invoice</span>
             </Button>
             <Button
               variant="outline"
-              className="h-20 flex flex-col gap-2 hover:bg-slate-50"
+              className="h-20 flex flex-col gap-2 hover:bg-muted"
             >
               <FileText className="w-5 h-5" />
               <span className="text-sm">New Contract</span>
             </Button>
             <Button
               variant="outline"
-              className="h-20 flex flex-col gap-2 hover:bg-slate-50"
+              className="h-20 flex flex-col gap-2 hover:bg-muted"
             >
               <Users className="w-5 h-5" />
               <span className="text-sm">Add Client</span>
             </Button>
             <Button
               variant="outline"
-              className="h-20 flex flex-col gap-2 hover:bg-slate-50"
+              className="h-20 flex flex-col gap-2 hover:bg-muted"
             >
               <BarChart className="w-5 h-5" />
               <span className="text-sm">View Reports</span>

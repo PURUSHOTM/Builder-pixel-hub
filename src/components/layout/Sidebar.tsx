@@ -66,19 +66,15 @@ export function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700">
+    <div className="flex flex-col h-full bg-card border-r border-border">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-6 border-b border-slate-200 dark:border-slate-700">
-        <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-          <Briefcase className="w-5 h-5 text-white" />
+      <div className="flex items-center gap-3 px-6 py-6 border-b border-border">
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <Briefcase className="w-5 h-5 text-primary-foreground" />
         </div>
         <div>
-          <h1 className="font-bold text-lg text-slate-900 dark:text-white">
-            ContractPro
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Invoice Manager
-          </p>
+          <h1 className="font-bold text-lg text-foreground">ContractPro</h1>
+          <p className="text-xs text-muted-foreground">Invoice Manager</p>
         </div>
       </div>
 
@@ -93,16 +89,14 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
                 isActive
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/50 dark:text-blue-400 dark:border-blue-800"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white",
+                  ? "bg-primary/10 text-primary border border-primary/20"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
               <item.icon
                 className={cn(
                   "w-5 h-5",
-                  isActive
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-slate-400",
+                  isActive ? "text-primary" : "text-muted-foreground",
                 )}
               />
               <span className="flex-1">{item.name}</span>
@@ -120,7 +114,7 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom navigation */}
-      <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700 space-y-1">
+      <div className="px-4 py-4 border-t border-border space-y-1">
         {bottomNavigation.map((item) => {
           const isActive = location.pathname === item.href;
           return (
@@ -130,16 +124,14 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200",
                 isActive
-                  ? "bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/50 dark:text-blue-400 dark:border-blue-800"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white",
+                  ? "bg-primary/10 text-primary border border-primary/20"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
               <item.icon
                 className={cn(
                   "w-5 h-5",
-                  isActive
-                    ? "text-blue-600 dark:text-blue-400"
-                    : "text-slate-400",
+                  isActive ? "text-primary" : "text-muted-foreground",
                 )}
               />
               <span className="flex-1">{item.name}</span>
@@ -150,26 +142,26 @@ export function Sidebar() {
         <Button
           variant="ghost"
           onClick={handleLogout}
-          className="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+          className="w-full justify-start gap-3 px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
         >
-          <LogOut className="w-5 h-5 text-slate-400" />
+          <LogOut className="w-5 h-5 text-muted-foreground" />
           <span>Logout</span>
         </Button>
       </div>
 
       {/* User info */}
-      <div className="px-4 py-4 border-t border-slate-200 dark:border-slate-700">
+      <div className="px-4 py-4 border-t border-border">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
-            <span className="text-xs font-semibold text-white">
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <span className="text-xs font-semibold text-primary-foreground">
               {user?.name?.charAt(0).toUpperCase()}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+            <p className="text-sm font-medium text-foreground truncate">
               {user?.name}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+            <p className="text-xs text-muted-foreground truncate">
               {user?.email}
             </p>
           </div>

@@ -30,32 +30,28 @@ const testimonial = {
 
 export function AuthLayout() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Left side - Hero section */}
       <div className="hidden lg:flex lg:flex-1 lg:flex-col lg:justify-center lg:px-12 xl:px-16">
         <div className="max-w-md mx-auto">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center">
-              <Briefcase className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+              <Briefcase className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-xl text-slate-900 dark:text-white">
-                ContractPro
-              </h1>
-              <p className="text-sm text-slate-500 dark:text-slate-400">
-                Invoice Manager
-              </p>
+              <h1 className="font-bold text-xl text-foreground">ContractPro</h1>
+              <p className="text-sm text-muted-foreground">Invoice Manager</p>
             </div>
           </div>
 
           {/* Headline */}
           <div className="mb-12">
-            <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               Manage contracts & invoices{" "}
-              <span className="text-blue-600">like a pro</span>
+              <span className="text-primary">like a pro</span>
             </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-300">
+            <p className="text-lg text-muted-foreground">
               Streamline your freelance business with automated invoicing,
               e-signature integration, and comprehensive client management.
             </p>
@@ -65,14 +61,14 @@ export function AuthLayout() {
           <div className="space-y-6 mb-12">
             {features.map((feature, index) => (
               <div key={index} className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white mb-1">
+                  <h3 className="font-semibold text-foreground mb-1">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                  <p className="text-sm text-muted-foreground">
                     {feature.description}
                   </p>
                 </div>
@@ -81,7 +77,7 @@ export function AuthLayout() {
           </div>
 
           {/* Testimonial */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
+          <div className="bg-card rounded-2xl p-6 border border-border">
             <div className="flex gap-1 mb-4">
               {[...Array(testimonial.rating)].map((_, i) => (
                 <Star
@@ -90,14 +86,14 @@ export function AuthLayout() {
                 />
               ))}
             </div>
-            <blockquote className="text-slate-700 dark:text-slate-300 mb-4">
+            <blockquote className="text-muted-foreground mb-4">
               "{testimonial.content}"
             </blockquote>
             <div>
-              <div className="font-semibold text-slate-900 dark:text-white">
+              <div className="font-semibold text-foreground">
                 {testimonial.author}
               </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400">
+              <div className="text-sm text-muted-foreground">
                 {testimonial.role}
               </div>
             </div>
@@ -110,13 +106,11 @@ export function AuthLayout() {
         <div className="w-full max-w-sm mx-auto">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-              <Briefcase className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Briefcase className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-lg text-slate-900 dark:text-white">
-                ContractPro
-              </h1>
+              <h1 className="font-bold text-lg text-foreground">ContractPro</h1>
             </div>
           </div>
 

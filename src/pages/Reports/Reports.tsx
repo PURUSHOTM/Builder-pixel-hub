@@ -14,10 +14,8 @@ export function Reports() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Reports
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Reports</h1>
+          <p className="text-muted-foreground mt-1">
             Export and analyze your business data
           </p>
         </div>
@@ -26,7 +24,7 @@ export function Reports() {
             <Calendar className="w-4 h-4" />
             Date Range
           </Button>
-          <Button className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700">
+          <Button className="gap-2 bg-primary hover:bg-primary/90">
             <Download className="w-4 h-4" />
             Export PDF
           </Button>
@@ -43,11 +41,11 @@ export function Reports() {
         </CardHeader>
         <CardContent>
           <div className="text-center py-12">
-            <BarChart3 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+            <BarChart3 className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               Reports & Analytics Coming Soon
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+            <p className="text-muted-foreground max-w-md mx-auto">
               This feature will include comprehensive reporting with revenue
               analytics, client performance, and PDF export capabilities.
             </p>

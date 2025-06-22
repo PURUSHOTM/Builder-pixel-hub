@@ -71,10 +71,8 @@ export function Login() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-          Welcome back
-        </h1>
-        <p className="text-slate-600 dark:text-slate-300">
+        <h1 className="text-3xl font-bold text-foreground">Welcome back</h1>
+        <p className="text-muted-foreground">
           Sign in to your account to continue
         </p>
       </div>
@@ -102,7 +100,7 @@ export function Login() {
             placeholder="Enter your email"
             className={cn(
               "w-full h-11",
-              errors.email && "border-red-500 focus:ring-red-500",
+              errors.email && "border-destructive focus:ring-destructive",
             )}
             {...register("email", {
               required: "Email is required",
@@ -117,9 +115,7 @@ export function Login() {
             })}
           />
           {errors.email && (
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {errors.email.message}
-            </p>
+            <p className="text-sm text-destructive">{errors.email.message}</p>
           )}
         </div>
 
@@ -135,7 +131,7 @@ export function Login() {
               placeholder="Enter your password"
               className={cn(
                 "w-full h-11 pr-10",
-                errors.password && "border-red-500 focus:ring-red-500",
+                errors.password && "border-destructive focus:ring-destructive",
               )}
               {...register("password", {
                 required: "Password is required",
@@ -157,14 +153,14 @@ export function Login() {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
-                <EyeOff className="h-4 w-4 text-slate-400" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4 text-slate-400" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
             </Button>
           </div>
           {errors.password && (
-            <p className="text-sm text-red-600 dark:text-red-400">
+            <p className="text-sm text-destructive">
               {errors.password.message}
             </p>
           )}
@@ -177,18 +173,18 @@ export function Login() {
               id="remember-me"
               name="remember-me"
               type="checkbox"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
             <Label
               htmlFor="remember-me"
-              className="ml-2 text-sm text-slate-600"
+              className="ml-2 text-sm text-muted-foreground"
             >
               Remember me
             </Label>
           </div>
           <Link
             to="/auth/forgot-password"
-            className="text-sm text-blue-600 hover:text-blue-500 font-medium"
+            className="text-sm text-primary hover:text-primary/80 font-medium"
           >
             Forgot password?
           </Link>
@@ -196,10 +192,8 @@ export function Login() {
 
         {/* Error message */}
         {errors.root && (
-          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg p-3">
-            <p className="text-sm text-red-600 dark:text-red-400">
-              {errors.root.message}
-            </p>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3">
+            <p className="text-sm text-destructive">{errors.root.message}</p>
           </div>
         )}
 
@@ -207,7 +201,7 @@ export function Login() {
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full h-11 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium"
+          className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
         >
           {isLoading ? (
             <div className="flex items-center gap-2">
@@ -225,11 +219,11 @@ export function Login() {
 
       {/* Sign up link */}
       <div className="text-center">
-        <p className="text-sm text-slate-600 dark:text-slate-300">
+        <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}
           <Link
             to="/auth/signup"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-primary hover:text-primary/80"
           >
             Sign up for free
           </Link>
@@ -239,10 +233,10 @@ export function Login() {
       {/* Social login */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200 dark:border-slate-700" />
+          <div className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-slate-50 dark:bg-slate-900 text-slate-500">
+          <span className="px-2 bg-background text-muted-foreground">
             Or continue with
           </span>
         </div>
