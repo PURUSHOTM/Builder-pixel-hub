@@ -252,6 +252,43 @@ export function Clients() {
     setIsDeleteDialogOpen(true);
   };
 
+  // Handle dialog close with proper cleanup
+  const handleCreateDialogClose = (open: boolean) => {
+    setIsCreateDialogOpen(open);
+    if (!open) {
+      setFormData(initialFormData);
+      // Restore focus to trigger button after modal closes
+      setTimeout(() => {
+        const addButton = document.querySelector(
+          '[aria-label="Add Client"]',
+        ) as HTMLElement;
+        addButton?.focus();
+      }, 100);
+    }
+  };
+
+  const handleEditDialogClose = (open: boolean) => {
+    setIsEditDialogOpen(open);
+    if (!open) {
+      setSelectedClient(null);
+      setFormData(initialFormData);
+    }
+  };
+
+  const handleViewDialogClose = (open: boolean) => {
+    setIsViewDialogOpen(open);
+    if (!open) {
+      setSelectedClient(null);
+    }
+  };
+
+  const handleDeleteDialogClose = (open: boolean) => {
+    setIsDeleteDialogOpen(open);
+    if (!open) {
+      setSelectedClient(null);
+    }
+  };
+
   const getClientInitials = (name: string) => {
     return name
       .split(" ")
