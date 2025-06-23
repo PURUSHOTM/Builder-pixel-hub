@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../../lib/auth/context";
 import { FreelancerDashboard } from "./FreelancerDashboard";
 import { ClientDashboard } from "./ClientDashboard";
+import { AdminDashboard } from "./AdminDashboard";
 
 export function Dashboard() {
   const { user } = useAuth();
@@ -18,8 +19,9 @@ export function Dashboard() {
   switch (user.role) {
     case "client":
       return <ClientDashboard />;
-    case "freelancer":
     case "admin":
+      return <AdminDashboard />;
+    case "freelancer":
     default:
       return <FreelancerDashboard />;
   }

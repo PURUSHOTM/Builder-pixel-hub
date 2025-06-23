@@ -41,7 +41,7 @@ export function Sidebar() {
               ? "Project Manager"
               : user?.role === "admin"
                 ? "Admin Portal"
-                : "Invoice Manager"}
+                : "Business Manager"}
           </p>
         </div>
       </div>

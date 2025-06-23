@@ -137,6 +137,10 @@ export function Signup() {
         {/* Account Type */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">I am joining as a</Label>
+          <input
+            type="hidden"
+            {...register("role", { required: "Please select an account type" })}
+          />
           <div className="grid grid-cols-2 gap-3">
             <div
               className={cn(
@@ -146,10 +150,7 @@ export function Signup() {
                   : "border-border",
               )}
               onClick={() => {
-                const currentValue = watch("role");
-                const newValue =
-                  currentValue === "freelancer" ? "" : "freelancer";
-                setValue("role", newValue as "freelancer" | "client");
+                setValue("role", "freelancer");
               }}
             >
               <div className="flex items-center gap-3">
@@ -173,9 +174,7 @@ export function Signup() {
                   : "border-border",
               )}
               onClick={() => {
-                const currentValue = watch("role");
-                const newValue = currentValue === "client" ? "" : "client";
-                setValue("role", newValue as "freelancer" | "client");
+                setValue("role", "client");
               }}
             >
               <div className="flex items-center gap-3">

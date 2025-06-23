@@ -90,6 +90,7 @@ class ApiClient {
   private async getMockResponse<T>(
     endpoint: string,
     method: string = "GET",
+    requestData?: any,
   ): Promise<ApiResponse<T>> {
     // Simulate network delay for realistic UX
     await new Promise((resolve) =>
@@ -116,14 +117,16 @@ class ApiClient {
     }
 
     if (endpoint === "/auth/signup" && method === "POST") {
+      // Extract role from request data, default to freelancer if not provided
+      const role = requestData?.role || "freelancer";
       return {
         success: true,
         data: {
           user: {
             id: "demo-user-id",
-            name: "Demo User",
-            email: "demo@contractpro.com",
-            role: "freelancer",
+            name: requestData?.name || "Demo User",
+            email: requestData?.email || "demo@contractpro.com",
+            role: role,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           },
@@ -163,7 +166,19 @@ class ApiClient {
     // Use mock responses in demo mode
     if (DEMO_MODE) {
       console.log(`[DEMO MODE] ${options.method || "GET"} ${endpoint}`);
-      return this.getMockResponse<T>(endpoint, options.method || "GET");
+      let requestData;
+      if (options.body && typeof options.body === "string") {
+        try {
+          requestData = JSON.parse(options.body);
+        } catch (e) {
+          requestData = null;
+        }
+      }
+      return this.getMockResponse<T>(
+        endpoint,
+        options.method || "GET",
+        requestData,
+      );
     }
 
     let config = {
@@ -214,7 +229,19 @@ class ApiClient {
         error.message.includes("fetch")
       ) {
         console.log(`[DEMO MODE] Network error caught, using mock response`);
-        return this.getMockResponse<T>(endpoint, options.method || "GET");
+        let requestData;
+        if (options.body && typeof options.body === "string") {
+          try {
+            requestData = JSON.parse(options.body);
+          } catch (e) {
+            requestData = null;
+          }
+        }
+        return this.getMockResponse<T>(
+          endpoint,
+          options.method || "GET",
+          requestData,
+        );
       }
 
       // Handle network errors gracefully
