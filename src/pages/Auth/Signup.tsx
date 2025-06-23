@@ -170,9 +170,7 @@ export function Signup() {
                   : "border-border",
               )}
               onClick={() => {
-                const currentValue = watch("role");
-                const newValue = currentValue === "client" ? "" : "client";
-                setValue("role", newValue as "freelancer" | "client");
+                setValue("role", "client");
               }}
             >
               <div className="flex items-center gap-3">
