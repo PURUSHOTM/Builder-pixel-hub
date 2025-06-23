@@ -93,6 +93,154 @@ const formatTimeAgo = (timestamp: string) => {
 };
 
 export function AdminDashboard() {
+  const [platformStats, setPlatformStats] = useState({
+    totalUsers: 0,
+    totalFreelancers: 0,
+    totalClients: 0,
+    activeProjects: 0,
+    totalRevenue: 0,
+    monthlyRevenue: 0,
+    pendingApprovals: 0,
+    systemHealth: 0,
+  });
+  const [userGrowthData, setUserGrowthData] = useState([]);
+  const [projectStatusData, setProjectStatusData] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch admin dashboard data
+        const [statsResponse, activityResponse] = await Promise.all([
+          DashboardApi.getAdminStats(),
+          DashboardApi.getRecentActivity(),
+        ]);
+
+        if (statsResponse.success) {
+          setPlatformStats(statsResponse.data);
+
+          // Create mock user growth data based on current stats
+          const stats = statsResponse.data;
+          const growth = [
+            {
+              month: "Jan",
+              freelancers: Math.floor(stats.totalFreelancers * 0.7),
+              clients: Math.floor(stats.totalClients * 0.7),
+            },
+            {
+              month: "Feb",
+              freelancers: Math.floor(stats.totalFreelancers * 0.75),
+              clients: Math.floor(stats.totalClients * 0.75),
+            },
+            {
+              month: "Mar",
+              freelancers: Math.floor(stats.totalFreelancers * 0.8),
+              clients: Math.floor(stats.totalClients * 0.8),
+            },
+            {
+              month: "Apr",
+              freelancers: Math.floor(stats.totalFreelancers * 0.85),
+              clients: Math.floor(stats.totalClients * 0.85),
+            },
+            {
+              month: "May",
+              freelancers: Math.floor(stats.totalFreelancers * 0.92),
+              clients: Math.floor(stats.totalClients * 0.92),
+            },
+            {
+              month: "Jun",
+              freelancers: stats.totalFreelancers,
+              clients: stats.totalClients,
+            },
+          ];
+          setUserGrowthData(growth);
+
+          // Create project status data
+          const projectStatus = [
+            { name: "Active", value: stats.activeProjects, color: "#059669" },
+            {
+              name: "Completed",
+              value: stats.activeProjects * 4,
+              color: "#3b82f6",
+            },
+            {
+              name: "On Hold",
+              value: Math.floor(stats.activeProjects * 0.2),
+              color: "#f59e0b",
+            },
+            {
+              name: "Cancelled",
+              value: Math.floor(stats.activeProjects * 0.1),
+              color: "#ef4444",
+            },
+          ];
+          setProjectStatusData(projectStatus);
+        }
+
+        if (activityResponse.success) {
+          // Format activity data for admin view
+          const formattedActivity = activityResponse.data
+            .slice(0, 4)
+            .map((activity: any) => ({
+              ...activity,
+              icon: getActivityIcon(activity.type),
+              color: getActivityColor(activity.type),
+              time: formatTimeAgo(activity.timestamp),
+            }));
+          setRecentActivity(formattedActivity);
+        }
+
+        // Mock pending approvals
+        const mockApprovals = [
+          {
+            id: 1,
+            type: "Profile verification",
+            user: "New Freelancer",
+            userType: "Freelancer",
+            submitted: "2 hours ago",
+            priority: "high",
+          },
+          {
+            id: 2,
+            type: "Payout request",
+            user: "Active Client",
+            userType: "Client",
+            submitted: "4 hours ago",
+            priority: "medium",
+          },
+          {
+            id: 3,
+            type: "Contract dispute",
+            user: "Project Issue",
+            userType: "Project",
+            submitted: "1 day ago",
+            priority: "high",
+          },
+        ];
+        setPendingApprovals(mockApprovals);
+      } catch (error) {
+        console.error("Failed to fetch admin dashboard data:", error);
+        toast.error("Failed to load admin dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
