@@ -1,31 +1,85 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import { Briefcase, Star, Shield, Users, TrendingUp } from "lucide-react";
+import { Outlet, useLocation } from "react-router-dom";
+import {
+  Briefcase,
+  Star,
+  Shield,
+  Users,
+  TrendingUp,
+  Target,
+  Building2,
+  UserCheck,
+} from "lucide-react";
 
-const features = [
-  {
-    icon: Shield,
-    title: "Secure & Reliable",
-    description: "Enterprise-grade security for your contracts and data",
-  },
-  {
-    icon: Users,
-    title: "Client Management",
-    description: "Organize and manage all your clients in one place",
-  },
-  {
-    icon: TrendingUp,
-    title: "Track Revenue",
-    description: "Monitor your income and business growth",
-  },
-];
+// Content varies based on signup context (if on signup page, we can show role-specific content)
+const getContentForContext = (isSignup: boolean) => {
+  if (!isSignup) {
+    // Default content for login page
+    return {
+      features: [
+        {
+          icon: Shield,
+          title: "Secure & Reliable",
+          description: "Enterprise-grade security for your contracts and data",
+        },
+        {
+          icon: Users,
+          title: "Client Management",
+          description: "Organize and manage all your clients in one place",
+        },
+        {
+          icon: TrendingUp,
+          title: "Track Revenue",
+          description: "Monitor your income and business growth",
+        },
+      ],
+      testimonial: {
+        content:
+          "ContractPro has revolutionized how I manage my business. The automated invoicing and contract management saves me hours every week.",
+        author: "Sarah Johnson",
+        role: "Business Owner",
+        rating: 5,
+      },
+      headline: "Manage contracts & invoices",
+      subheadline: "like a pro",
+      description:
+        "Streamline your business with automated invoicing, e-signature integration, and comprehensive project management.",
+      subtitle: "Business Manager",
+    };
+  }
 
-const testimonial = {
-  content:
-    "ContractPro has revolutionized how I manage my freelance business. The automated invoicing and contract management saves me hours every week.",
-  author: "Sarah Johnson",
-  role: "Freelance Designer",
-  rating: 5,
+  // Content for signup page - more general
+  return {
+    features: [
+      {
+        icon: Target,
+        title: "Project Success",
+        description: "From freelancers to clients, manage projects efficiently",
+      },
+      {
+        icon: Building2,
+        title: "Business Growth",
+        description: "Tools that scale with your business needs",
+      },
+      {
+        icon: UserCheck,
+        title: "Collaboration",
+        description: "Connect freelancers with clients seamlessly",
+      },
+    ],
+    testimonial: {
+      content:
+        "Whether you're a freelancer or looking to hire talent, ContractPro makes project management simple and efficient.",
+      author: "Alex Chen",
+      role: "Platform User",
+      rating: 5,
+    },
+    headline: "Your project management",
+    subheadline: "solution",
+    description:
+      "Join thousands of freelancers and clients who trust ContractPro for their project and contract management needs.",
+    subtitle: "Project Platform",
+  };
 };
 
 export function AuthLayout() {
