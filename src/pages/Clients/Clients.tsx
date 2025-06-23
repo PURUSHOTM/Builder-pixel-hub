@@ -442,31 +442,13 @@ export function Clients() {
             Manage your client relationships and contact information
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2 bg-primary hover:bg-primary/90">
-              <Plus className="w-4 h-4" />
-              Add Client
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add New Client</DialogTitle>
-            </DialogHeader>
-            <ClientForm />
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreate} disabled={submitting}>
-                {submitting ? "Creating..." : "Create Client"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button
+          className="gap-2 bg-primary hover:bg-primary/90"
+          onClick={modals.create.open}
+        >
+          <Plus className="w-4 h-4" />
+          Add Client
+        </Button>
       </div>
 
       {/* Search and Filters */}
