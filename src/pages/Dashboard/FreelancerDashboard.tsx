@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -34,6 +34,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { DashboardApi, ContractsApi } from "../../lib/api/client";
+import { toast } from "sonner";
 
 // Mock data - in real app this would come from API
 const stats = {
