@@ -1,4 +1,6 @@
+
 import React, { useEffect, useState } from "react";
+
 import {
   TrendingUp,
   Users,
@@ -241,6 +243,9 @@ export function AdminDashboard() {
     );
   }
 
+
+
+export function AdminDashboard() {
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
