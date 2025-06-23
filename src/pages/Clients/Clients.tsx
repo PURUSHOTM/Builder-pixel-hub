@@ -216,7 +216,7 @@ export function Clients() {
     [selectedClient, formData, modals.edit],
   );
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     if (!selectedClient) return;
 
     try {
@@ -225,7 +225,7 @@ export function Clients() {
 
       if (response.success) {
         toast.success("Client deleted successfully");
-        setIsDeleteDialogOpen(false);
+        modals.delete.close();
         setSelectedClient(null);
         fetchClients();
       }
@@ -235,7 +235,7 @@ export function Clients() {
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [selectedClient, modals.delete]);
 
   const openEditDialog = (client: Client) => {
     setSelectedClient(client);
