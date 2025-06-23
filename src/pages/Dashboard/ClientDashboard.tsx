@@ -173,10 +173,11 @@ export function ClientDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, Client! 🎯
+            Project Dashboard 🎯
           </h1>
           <p className="text-muted-foreground mt-1">
-            Here's an overview of your projects and collaborations.
+            Manage your projects, track progress, and collaborate with
+            freelancers.
           </p>
         </div>
         <div className="flex gap-3">
