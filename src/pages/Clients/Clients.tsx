@@ -547,7 +547,7 @@ export function Clients() {
                   : "Start building your client base by adding your first client."}
               </p>
               {!searchTerm && (
-                <Button onClick={() => setIsCreateDialogOpen(true)}>
+                <Button onClick={modals.create.open}>
                   Add Your First Client
                 </Button>
               )}
