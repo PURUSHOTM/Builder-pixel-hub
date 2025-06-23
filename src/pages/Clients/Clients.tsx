@@ -176,30 +176,45 @@ export function Clients() {
     [formData, modals.create],
   );
 
-  const handleEdit = async () => {
-    if (!selectedClient) return;
+  const handleEdit = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
 
-    try {
-      setSubmitting(true);
-      const response = await ClientsApi.updateClient(
-        selectedClient._id,
-        formData,
-      );
+      if (!selectedClient) return;
 
-      if (response.success) {
-        toast.success("Client updated successfully");
-        setIsEditDialogOpen(false);
-        setSelectedClient(null);
-        setFormData(initialFormData);
-        fetchClients();
+      // Basic validation
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.company.trim()
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
       }
-    } catch (error: any) {
-      console.error("Error updating client:", error);
-      toast.error(error.message || "Failed to update client");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+
+      try {
+        setSubmitting(true);
+        const response = await ClientsApi.updateClient(
+          selectedClient._id,
+          formData,
+        );
+
+        if (response.success) {
+          toast.success("Client updated successfully");
+          modals.edit.close();
+          setSelectedClient(null);
+          setFormData(initialFormData);
+          fetchClients();
+        }
+      } catch (error: any) {
+        console.error("Error updating client:", error);
+        toast.error(error.message || "Failed to update client");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [selectedClient, formData, modals.edit],
+  );
 
   const handleDelete = async () => {
     if (!selectedClient) return;
