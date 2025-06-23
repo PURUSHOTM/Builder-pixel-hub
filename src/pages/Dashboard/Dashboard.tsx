@@ -19,8 +19,9 @@ export function Dashboard() {
   switch (user.role) {
     case "client":
       return <ClientDashboard />;
-    case "freelancer":
     case "admin":
+      return <AdminDashboard />;
+    case "freelancer":
     default:
       return <FreelancerDashboard />;
   }
