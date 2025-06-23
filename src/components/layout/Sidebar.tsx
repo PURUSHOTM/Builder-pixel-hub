@@ -1,57 +1,16 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "../../lib/utils";
-import {
-  LayoutDashboard,
-  Users,
-  FileText,
-  Receipt,
-  BarChart3,
-  Settings,
-  LogOut,
-  Briefcase,
-} from "lucide-react";
+import { LogOut, Briefcase } from "lucide-react";
 import { useAuth } from "../../lib/auth/context";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-
-const navigation = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    name: "Clients",
-    href: "/clients",
-    icon: Users,
-  },
-  {
-    name: "Contracts",
-    href: "/contracts",
-    icon: FileText,
-    badge: "3",
-  },
-  {
-    name: "Invoices",
-    href: "/invoices",
-    icon: Receipt,
-    badge: "5",
-  },
-  {
-    name: "Reports",
-    href: "/reports",
-    icon: BarChart3,
-  },
-];
-
-const bottomNavigation = [
-  {
-    name: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
-];
+import {
+  getNavigationForRole,
+  bottomNavigation,
+  getRoleDisplayName,
+  getRoleColor,
+} from "../../lib/navigation";
 
 export function Sidebar() {
   const location = useLocation();
@@ -65,6 +24,9 @@ export function Sidebar() {
     }
   };
 
+  // Get navigation items based on user role
+  const navigation = user ? getNavigationForRole(user.role) : [];
+
   return (
     <div className="flex flex-col h-full bg-card border-r border-border">
       {/* Logo */}
@@ -74,7 +36,13 @@ export function Sidebar() {
         </div>
         <div>
           <h1 className="font-bold text-lg text-foreground">ContractPro</h1>
-          <p className="text-xs text-muted-foreground">Invoice Manager</p>
+          <p className="text-xs text-muted-foreground">
+            {user?.role === "client"
+              ? "Project Manager"
+              : user?.role === "admin"
+                ? "Admin Portal"
+                : "Invoice Manager"}
+          </p>
         </div>
       </div>
 
@@ -158,9 +126,19 @@ export function Sidebar() {
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
-              {user?.name}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-foreground truncate">
+                {user?.name}
+              </p>
+              {user?.role && (
+                <Badge
+                  variant="secondary"
+                  className={cn("text-xs", getRoleColor(user.role))}
+                >
+                  {getRoleDisplayName(user.role)}
+                </Badge>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground truncate">
               {user?.email}
             </p>
