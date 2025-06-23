@@ -44,129 +44,55 @@ import {
 import { DashboardApi } from "../../lib/api/client";
 import { toast } from "sonner";
 
-// Mock data - in real app this would come from API
-const stats = {
-  activeProjects: 8,
-  completedProjects: 15,
-  totalSpent: 32400,
-  monthlySpent: 4200,
-  activeFreelancers: 5,
-  pendingPayments: 2,
+// Activity type icon mapping
+const getActivityIcon = (type: string) => {
+  switch (type) {
+    case "project_completed":
+      return CheckCircle;
+    case "payment_made":
+      return CreditCard;
+    case "milestone_reached":
+      return Star;
+    case "message_received":
+      return MessageSquare;
+    case "contract_signed":
+      return FileText;
+    default:
+      return CheckCircle;
+  }
 };
 
-const projectData = [
-  { month: "Jan", completed: 2, active: 3 },
-  { month: "Feb", completed: 3, active: 4 },
-  { month: "Mar", completed: 1, active: 5 },
-  { month: "Apr", completed: 4, active: 6 },
-  { month: "May", completed: 2, active: 8 },
-  { month: "Jun", completed: 3, active: 8 },
-];
+// Activity type color mapping
+const getActivityColor = (type: string) => {
+  switch (type) {
+    case "project_completed":
+      return "text-green-600";
+    case "payment_made":
+      return "text-blue-600";
+    case "milestone_reached":
+      return "text-yellow-600";
+    case "message_received":
+      return "text-purple-600";
+    case "contract_signed":
+      return "text-blue-600";
+    default:
+      return "text-gray-600";
+  }
+};
 
-const budgetData = [
-  { name: "Completed", value: 75, color: "#059669" },
-  { name: "In Progress", value: 60, color: "#d97706" },
-  { name: "Planned", value: 40, color: "#64748b" },
-];
+// Format time ago
+const formatTimeAgo = (timestamp: string) => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+  );
 
-const activeProjects = [
-  {
-    id: 1,
-    title: "E-commerce Website",
-    freelancer: "Sarah Johnson",
-    progress: 85,
-    deadline: "2024-02-15",
-    budget: 5000,
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    title: "Mobile App Design",
-    freelancer: "Mike Chen",
-    progress: 60,
-    deadline: "2024-02-28",
-    budget: 3500,
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    title: "Brand Identity",
-    freelancer: "Emma Wilson",
-    progress: 30,
-    deadline: "2024-03-10",
-    budget: 2000,
-    status: "In Progress",
-  },
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    type: "project_completed",
-    title: "Project completed",
-    description: "Website Development by John Doe",
-    time: "2 hours ago",
-    icon: CheckCircle,
-    color: "text-green-600",
-  },
-  {
-    id: 2,
-    type: "payment_made",
-    title: "Payment processed",
-    description: "$2,500 paid to Sarah Johnson",
-    time: "1 day ago",
-    icon: CreditCard,
-    color: "text-blue-600",
-  },
-  {
-    id: 3,
-    type: "milestone_reached",
-    title: "Milestone reached",
-    description: "Mobile App - Design Phase Complete",
-    time: "2 days ago",
-    icon: Star,
-    color: "text-yellow-600",
-  },
-  {
-    id: 4,
-    type: "message_received",
-    title: "New message",
-    description: "Update from Emma Wilson",
-    time: "3 days ago",
-    icon: MessageSquare,
-    color: "text-purple-600",
-  },
-];
-
-const topFreelancers = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    specialty: "Web Development",
-    rating: 4.9,
-    projects: 3,
-    avatar: "/placeholder.svg",
-    totalEarned: 12500,
-  },
-  {
-    id: 2,
-    name: "Mike Chen",
-    specialty: "UI/UX Design",
-    rating: 4.8,
-    projects: 2,
-    avatar: "/placeholder.svg",
-    totalEarned: 8500,
-  },
-  {
-    id: 3,
-    name: "Emma Wilson",
-    specialty: "Branding",
-    rating: 5.0,
-    projects: 1,
-    avatar: "/placeholder.svg",
-    totalEarned: 3500,
-  },
-];
+  if (diffInHours < 1) return "Just now";
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 48) return "1 day ago";
+  return `${Math.floor(diffInHours / 24)} days ago`;
+};
 
 export function ClientDashboard() {
   return (
