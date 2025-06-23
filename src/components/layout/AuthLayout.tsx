@@ -83,6 +83,10 @@ const getContentForContext = (isSignup: boolean) => {
 };
 
 export function AuthLayout() {
+  const location = useLocation();
+  const isSignup = location.pathname.includes("/signup");
+  const content = getContentForContext(isSignup);
+
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left side - Hero section */}
@@ -95,25 +99,26 @@ export function AuthLayout() {
             </div>
             <div>
               <h1 className="font-bold text-xl text-foreground">ContractPro</h1>
-              <p className="text-sm text-muted-foreground">Invoice Manager</p>
+              <p className="text-sm text-muted-foreground">
+                {content.subtitle}
+              </p>
             </div>
           </div>
 
           {/* Headline */}
           <div className="mb-12">
             <h2 className="text-4xl font-bold text-foreground mb-4">
-              Manage contracts & invoices{" "}
-              <span className="text-primary">like a pro</span>
+              {content.headline}{" "}
+              <span className="text-primary">{content.subheadline}</span>
             </h2>
             <p className="text-lg text-muted-foreground">
-              Streamline your freelance business with automated invoicing,
-              e-signature integration, and comprehensive client management.
+              {content.description}
             </p>
           </div>
 
           {/* Features */}
           <div className="space-y-6 mb-12">
-            {features.map((feature, index) => (
+            {content.features.map((feature, index) => (
               <div key={index} className="flex items-start gap-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
                   <feature.icon className="w-5 h-5 text-primary" />
@@ -133,7 +138,7 @@ export function AuthLayout() {
           {/* Testimonial */}
           <div className="bg-card rounded-2xl p-6 border border-border">
             <div className="flex gap-1 mb-4">
-              {[...Array(testimonial.rating)].map((_, i) => (
+              {[...Array(content.testimonial.rating)].map((_, i) => (
                 <Star
                   key={i}
                   className="w-4 h-4 text-yellow-400 fill-current"
@@ -141,14 +146,14 @@ export function AuthLayout() {
               ))}
             </div>
             <blockquote className="text-muted-foreground mb-4">
-              "{testimonial.content}"
+              "{content.testimonial.content}"
             </blockquote>
             <div>
               <div className="font-semibold text-foreground">
-                {testimonial.author}
+                {content.testimonial.author}
               </div>
               <div className="text-sm text-muted-foreground">
-                {testimonial.role}
+                {content.testimonial.role}
               </div>
             </div>
           </div>
