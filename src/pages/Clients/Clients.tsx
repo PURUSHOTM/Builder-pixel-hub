@@ -92,6 +92,134 @@ const initialFormData: ClientFormData = {
   notes: "",
 };
 
+// Move ClientForm outside of the main component to prevent recreation
+interface ClientFormProps {
+  formData: ClientFormData;
+  onInputChange: (field: string, value: string) => void;
+  onAddressChange: (field: string, value: string) => void;
+}
+
+const ClientForm: React.FC<ClientFormProps> = React.memo(
+  ({ formData, onInputChange, onAddressChange }) => (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Full Name *</Label>
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => onInputChange("name", e.target.value)}
+            placeholder="John Doe"
+            autoComplete="name"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email *</Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => onInputChange("email", e.target.value)}
+            placeholder="john@example.com"
+            autoComplete="email"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="company">Company *</Label>
+          <Input
+            id="company"
+            value={formData.company}
+            onChange={(e) => onInputChange("company", e.target.value)}
+            placeholder="Acme Corp"
+            autoComplete="organization"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => onInputChange("phone", e.target.value)}
+            placeholder="+1 234 567 8900"
+            autoComplete="tel"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h4 className="font-medium">Address</h4>
+        <div className="space-y-2">
+          <Label htmlFor="street">Street Address</Label>
+          <Input
+            id="street"
+            value={formData.address.street}
+            onChange={(e) => onAddressChange("street", e.target.value)}
+            placeholder="123 Main St"
+            autoComplete="street-address"
+          />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="city">City</Label>
+            <Input
+              id="city"
+              value={formData.address.city}
+              onChange={(e) => onAddressChange("city", e.target.value)}
+              placeholder="San Francisco"
+              autoComplete="address-level2"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="state">State</Label>
+            <Input
+              id="state"
+              value={formData.address.state}
+              onChange={(e) => onAddressChange("state", e.target.value)}
+              placeholder="CA"
+              autoComplete="address-level1"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="zipCode">ZIP Code</Label>
+            <Input
+              id="zipCode"
+              value={formData.address.zipCode}
+              onChange={(e) => onAddressChange("zipCode", e.target.value)}
+              placeholder="94105"
+              autoComplete="postal-code"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="country">Country</Label>
+            <Input
+              id="country"
+              value={formData.address.country}
+              onChange={(e) => onAddressChange("country", e.target.value)}
+              placeholder="United States"
+              autoComplete="country-name"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notes</Label>
+        <Textarea
+          id="notes"
+          value={formData.notes}
+          onChange={(e) => onInputChange("notes", e.target.value)}
+          placeholder="Additional notes about this client..."
+          rows={3}
+        />
+      </div>
+    </div>
+  ),
+);
+
 export function Clients() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
@@ -312,125 +440,6 @@ export function Clients() {
       address: { ...prev.address, [field]: value },
     }));
   }, []);
-
-  const ClientForm = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name *</Label>
-          <Input
-            id="name"
-            value={formData.name}
-            onChange={(e) => handleInputChange("name", e.target.value)}
-            placeholder="John Doe"
-            autoComplete="name"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email *</Label>
-          <Input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleInputChange("email", e.target.value)}
-            placeholder="john@example.com"
-            autoComplete="email"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="company">Company *</Label>
-          <Input
-            id="company"
-            value={formData.company}
-            onChange={(e) => handleInputChange("company", e.target.value)}
-            placeholder="Acme Corp"
-            autoComplete="organization"
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
-          <Input
-            id="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={(e) => handleInputChange("phone", e.target.value)}
-            placeholder="+1 234 567 8900"
-            autoComplete="tel"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h4 className="font-medium">Address</h4>
-        <div className="space-y-2">
-          <Label htmlFor="street">Street Address</Label>
-          <Input
-            id="street"
-            value={formData.address.street}
-            onChange={(e) => handleAddressChange("street", e.target.value)}
-            placeholder="123 Main St"
-            autoComplete="street-address"
-          />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input
-              id="city"
-              value={formData.address.city}
-              onChange={(e) => handleAddressChange("city", e.target.value)}
-              placeholder="San Francisco"
-              autoComplete="address-level2"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="state">State</Label>
-            <Input
-              id="state"
-              value={formData.address.state}
-              onChange={(e) => handleAddressChange("state", e.target.value)}
-              placeholder="CA"
-              autoComplete="address-level1"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="zipCode">ZIP Code</Label>
-            <Input
-              id="zipCode"
-              value={formData.address.zipCode}
-              onChange={(e) => handleAddressChange("zipCode", e.target.value)}
-              placeholder="94105"
-              autoComplete="postal-code"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="country">Country</Label>
-            <Input
-              id="country"
-              value={formData.address.country}
-              onChange={(e) => handleAddressChange("country", e.target.value)}
-              placeholder="United States"
-              autoComplete="country-name"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="notes">Notes</Label>
-        <Textarea
-          id="notes"
-          value={formData.notes}
-          onChange={(e) => handleInputChange("notes", e.target.value)}
-          placeholder="Additional notes about this client..."
-          rows={3}
-        />
-      </div>
-    </div>
-  );
 
   return (
     <div className="space-y-6">
@@ -709,7 +718,11 @@ export function Clients() {
         isSubmitting={submitting}
         size="lg"
       >
-        <ClientForm />
+        <ClientForm
+          formData={formData}
+          onInputChange={handleInputChange}
+          onAddressChange={handleAddressChange}
+        />
       </FormModal>
 
       {/* Edit Client Modal */}
@@ -725,7 +738,11 @@ export function Clients() {
         isSubmitting={submitting}
         size="lg"
       >
-        <ClientForm />
+        <ClientForm
+          formData={formData}
+          onInputChange={handleInputChange}
+          onAddressChange={handleAddressChange}
+        />
       </FormModal>
 
       {/* View Client Modal */}
