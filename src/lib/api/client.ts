@@ -459,12 +459,32 @@ export class DashboardApi {
     return apiClient.get("/dashboard/stats");
   }
 
+  static async getClientStats() {
+    return apiClient.get("/dashboard/client-stats");
+  }
+
+  static async getAdminStats() {
+    return apiClient.get("/dashboard/admin-stats");
+  }
+
   static async getRevenueChart(period?: string) {
     return apiClient.get("/dashboard/revenue", { period });
   }
 
   static async getRecentActivity() {
     return apiClient.get("/dashboard/activity");
+  }
+
+  static async getUpcomingDeadlines() {
+    return apiClient.get("/dashboard/upcoming-deadlines");
+  }
+
+  static async getClientProjects(limit?: number) {
+    return apiClient.get("/dashboard/client-projects", { limit });
+  }
+
+  static async getClientFreelancers(limit?: number) {
+    return apiClient.get("/dashboard/client-freelancers", { limit });
   }
 }
 
