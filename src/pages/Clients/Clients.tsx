@@ -301,6 +301,18 @@ export function Clients() {
     return parts.length > 0 ? parts.join(", ") : "No address provided";
   };
 
+  // Memoized input handlers to prevent unnecessary re-renders
+  const handleInputChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleAddressChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: { ...prev.address, [field]: value },
+    }));
+  }, []);
+
   const ClientForm = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,8 +321,9 @@ export function Clients() {
           <Input
             id="name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="John Doe"
+            autoComplete="name"
           />
         </div>
         <div className="space-y-2">
@@ -319,10 +332,9 @@ export function Clients() {
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
+            onChange={(e) => handleInputChange("email", e.target.value)}
             placeholder="john@example.com"
+            autoComplete="email"
           />
         </div>
       </div>
@@ -333,21 +345,20 @@ export function Clients() {
           <Input
             id="company"
             value={formData.company}
-            onChange={(e) =>
-              setFormData({ ...formData, company: e.target.value })
-            }
+            onChange={(e) => handleInputChange("company", e.target.value)}
             placeholder="Acme Corp"
+            autoComplete="organization"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input
             id="phone"
+            type="tel"
             value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
+            onChange={(e) => handleInputChange("phone", e.target.value)}
             placeholder="+1 234 567 8900"
+            autoComplete="tel"
           />
         </div>
       </div>
@@ -359,13 +370,9 @@ export function Clients() {
           <Input
             id="street"
             value={formData.address.street}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                address: { ...formData.address, street: e.target.value },
-              })
-            }
+            onChange={(e) => handleAddressChange("street", e.target.value)}
             placeholder="123 Main St"
+            autoComplete="street-address"
           />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -374,13 +381,9 @@ export function Clients() {
             <Input
               id="city"
               value={formData.address.city}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, city: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("city", e.target.value)}
               placeholder="San Francisco"
+              autoComplete="address-level2"
             />
           </div>
           <div className="space-y-2">
@@ -388,13 +391,9 @@ export function Clients() {
             <Input
               id="state"
               value={formData.address.state}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, state: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("state", e.target.value)}
               placeholder="CA"
+              autoComplete="address-level1"
             />
           </div>
           <div className="space-y-2">
@@ -402,13 +401,9 @@ export function Clients() {
             <Input
               id="zipCode"
               value={formData.address.zipCode}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, zipCode: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("zipCode", e.target.value)}
               placeholder="94105"
+              autoComplete="postal-code"
             />
           </div>
           <div className="space-y-2">
@@ -416,13 +411,9 @@ export function Clients() {
             <Input
               id="country"
               value={formData.address.country}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, country: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("country", e.target.value)}
               placeholder="United States"
+              autoComplete="country-name"
             />
           </div>
         </div>
@@ -433,7 +424,7 @@ export function Clients() {
         <Textarea
           id="notes"
           value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          onChange={(e) => handleInputChange("notes", e.target.value)}
           placeholder="Additional notes about this client..."
           rows={3}
         />
