@@ -142,24 +142,39 @@ export function Clients() {
     setCurrentPage(1);
   };
 
-  const handleCreate = async () => {
-    try {
-      setSubmitting(true);
-      const response = await ClientsApi.createClient(formData);
+  const handleCreate = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
 
-      if (response.success) {
-        toast.success("Client created successfully");
-        setIsCreateDialogOpen(false);
-        setFormData(initialFormData);
-        fetchClients();
+      // Basic validation
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.company.trim()
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
       }
-    } catch (error: any) {
-      console.error("Error creating client:", error);
-      toast.error(error.message || "Failed to create client");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+
+      try {
+        setSubmitting(true);
+        const response = await ClientsApi.createClient(formData);
+
+        if (response.success) {
+          toast.success("Client created successfully");
+          modals.create.close();
+          setFormData(initialFormData);
+          fetchClients();
+        }
+      } catch (error: any) {
+        console.error("Error creating client:", error);
+        toast.error(error.message || "Failed to create client");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [formData, modals.create],
+  );
 
   const handleEdit = async () => {
     if (!selectedClient) return;
