@@ -37,96 +37,65 @@ import {
 import { DashboardApi, ContractsApi } from "../../lib/api/client";
 import { toast } from "sonner";
 
-// Mock data - in real app this would come from API
-const stats = {
-  totalRevenue: 45850,
-  monthlyRevenue: 12300,
-  totalClients: 28,
-  activeContracts: 15,
-  pendingInvoices: 8,
-  overdueInvoices: 3,
+// Activity type icon mapping
+const getActivityIcon = (type: string) => {
+  switch (type) {
+    case "invoice_paid":
+      return CheckCircle;
+    case "contract_signed":
+      return FileText;
+    case "invoice_overdue":
+      return AlertCircle;
+    case "client_added":
+      return Users;
+    default:
+      return CheckCircle;
+  }
 };
 
-const revenueData = [
-  { month: "Jan", revenue: 8500, invoices: 12 },
-  { month: "Feb", revenue: 9200, invoices: 15 },
-  { month: "Mar", revenue: 7800, invoices: 10 },
-  { month: "Apr", revenue: 10500, invoices: 18 },
-  { month: "May", revenue: 12300, invoices: 22 },
-  { month: "Jun", revenue: 11200, invoices: 19 },
-];
+// Activity type color mapping
+const getActivityColor = (type: string) => {
+  switch (type) {
+    case "invoice_paid":
+      return "text-green-600";
+    case "contract_signed":
+      return "text-blue-600";
+    case "invoice_overdue":
+      return "text-red-600";
+    case "client_added":
+      return "text-purple-600";
+    default:
+      return "text-gray-600";
+  }
+};
 
-const contractStatusData = [
-  { name: "Signed", value: 8, color: "#059669" },
-  { name: "Pending", value: 5, color: "#d97706" },
-  { name: "Draft", value: 2, color: "#64748b" },
-];
+// Format time ago
+const formatTimeAgo = (timestamp: string) => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+  );
 
-const recentActivity = [
-  {
-    id: 1,
-    type: "invoice_paid",
-    title: "Invoice #INV-001 paid",
-    description: "Acme Corp - $2,500",
-    time: "2 hours ago",
-    icon: CheckCircle,
-    color: "text-green-600",
-  },
-  {
-    id: 2,
-    type: "contract_signed",
-    title: "Contract signed",
-    description: "John Doe - Web Development",
-    time: "1 day ago",
-    icon: FileText,
-    color: "text-blue-600",
-  },
-  {
-    id: 3,
-    type: "invoice_overdue",
-    title: "Invoice overdue",
-    description: "Tech Solutions - $1,800",
-    time: "2 days ago",
-    icon: AlertCircle,
-    color: "text-red-600",
-  },
-  {
-    id: 4,
-    type: "client_added",
-    title: "New client added",
-    description: "Digital Marketing Inc.",
-    time: "3 days ago",
-    icon: Users,
-    color: "text-purple-600",
-  },
-];
+  if (diffInHours < 1) return "Just now";
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 48) return "1 day ago";
+  return `${Math.floor(diffInHours / 24)} days ago`;
+};
 
-const upcomingDeadlines = [
-  {
-    id: 1,
-    title: "Contract expires",
-    client: "Acme Corp",
-    date: "Tomorrow",
-    type: "contract",
-    urgent: true,
-  },
-  {
-    id: 2,
-    title: "Invoice due",
-    client: "Tech Solutions",
-    date: "In 3 days",
-    type: "invoice",
-    urgent: false,
-  },
-  {
-    id: 3,
-    title: "Payment reminder",
-    client: "Digital Marketing",
-    date: "In 5 days",
-    type: "reminder",
-    urgent: false,
-  },
-];
+// Format deadline date
+const formatDeadlineDate = (date: string) => {
+  const deadlineDate = new Date(date);
+  const now = new Date();
+  const diffInDays = Math.ceil(
+    (deadlineDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diffInDays === 0) return "Today";
+  if (diffInDays === 1) return "Tomorrow";
+  if (diffInDays < 0) return "Overdue";
+  return `In ${diffInDays} days`;
+};
 
 export function FreelancerDashboard() {
   return (
