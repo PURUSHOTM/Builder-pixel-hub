@@ -98,6 +98,114 @@ const formatDeadlineDate = (date: string) => {
 };
 
 export function FreelancerDashboard() {
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    monthlyRevenue: 0,
+    totalClients: 0,
+    activeContracts: 0,
+    pendingInvoices: 0,
+    overdueInvoices: 0,
+  });
+  const [revenueData, setRevenueData] = useState([]);
+  const [contractStatusData, setContractStatusData] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch all dashboard data in parallel
+        const [
+          statsResponse,
+          revenueResponse,
+          activityResponse,
+          deadlinesResponse,
+          contractsResponse,
+        ] = await Promise.all([
+          DashboardApi.getStats(),
+          DashboardApi.getRevenueChart(),
+          DashboardApi.getRecentActivity(),
+          DashboardApi.getUpcomingDeadlines(),
+          ContractsApi.getContracts({ limit: 100 }), // Get contracts for status breakdown
+        ]);
+
+        if (statsResponse.success) {
+          setStats(statsResponse.data);
+        }
+
+        if (revenueResponse.success) {
+          setRevenueData(revenueResponse.data);
+        }
+
+        if (activityResponse.success) {
+          // Format activity data for display
+          const formattedActivity = activityResponse.data.map(
+            (activity: any) => ({
+              ...activity,
+              icon: getActivityIcon(activity.type),
+              color: getActivityColor(activity.type),
+              time: formatTimeAgo(activity.timestamp),
+            }),
+          );
+          setRecentActivity(formattedActivity);
+        }
+
+        if (deadlinesResponse.success) {
+          // Format deadlines data
+          const formattedDeadlines = deadlinesResponse.data.map(
+            (deadline: any) => ({
+              ...deadline,
+              date: formatDeadlineDate(deadline.date),
+            }),
+          );
+          setUpcomingDeadlines(formattedDeadlines);
+        }
+
+        if (contractsResponse.success) {
+          // Process contracts for status breakdown
+          const contracts = contractsResponse.data;
+          const statusCounts = contracts.reduce((acc: any, contract: any) => {
+            acc[contract.status] = (acc[contract.status] || 0) + 1;
+            return acc;
+          }, {});
+
+          const contractStatus = [
+            {
+              name: "Signed",
+              value: statusCounts.signed || 0,
+              color: "#059669",
+            },
+            {
+              name: "Pending",
+              value: statusCounts.sent || 0,
+              color: "#d97706",
+            },
+            { name: "Draft", value: statusCounts.draft || 0, color: "#64748b" },
+          ];
+          setContractStatusData(contractStatus);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        toast.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
