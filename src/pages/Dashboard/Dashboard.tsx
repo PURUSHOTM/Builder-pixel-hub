@@ -2,6 +2,7 @@ import React from "react";
 import { useAuth } from "../../lib/auth/context";
 import { FreelancerDashboard } from "./FreelancerDashboard";
 import { ClientDashboard } from "./ClientDashboard";
+import { AdminDashboard } from "./AdminDashboard";
 
 export function Dashboard() {
   const { user } = useAuth();
