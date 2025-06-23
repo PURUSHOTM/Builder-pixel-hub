@@ -166,7 +166,19 @@ class ApiClient {
     // Use mock responses in demo mode
     if (DEMO_MODE) {
       console.log(`[DEMO MODE] ${options.method || "GET"} ${endpoint}`);
-      return this.getMockResponse<T>(endpoint, options.method || "GET");
+      let requestData;
+      if (options.body && typeof options.body === "string") {
+        try {
+          requestData = JSON.parse(options.body);
+        } catch (e) {
+          requestData = null;
+        }
+      }
+      return this.getMockResponse<T>(
+        endpoint,
+        options.method || "GET",
+        requestData,
+      );
     }
 
     let config = {
