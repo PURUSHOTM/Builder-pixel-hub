@@ -4,8 +4,8 @@ import { ApiResponse, PaginatedResponse } from "../types";
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
-// Demo mode configuration - enabled for testing until backend is fully connected
-const DEMO_MODE = true;
+// Demo mode configuration - always disabled for production use
+const DEMO_MODE = false;
 
 // Request/Response Interceptors
 type RequestInterceptor = (
@@ -147,181 +147,6 @@ class ApiClient {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         } as T,
-      };
-    }
-
-    // Dashboard endpoints
-    if (endpoint === "/dashboard/stats") {
-      return {
-        success: true,
-        data: {
-          totalRevenue: 45850,
-          monthlyRevenue: 12300,
-          totalClients: 28,
-          activeContracts: 15,
-          pendingInvoices: 8,
-          overdueInvoices: 3,
-        } as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/client-stats") {
-      return {
-        success: true,
-        data: {
-          activeProjects: 8,
-          completedProjects: 15,
-          totalSpent: 32400,
-          monthlySpent: 4200,
-          activeFreelancers: 5,
-          pendingPayments: 2,
-        } as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/admin-stats") {
-      return {
-        success: true,
-        data: {
-          totalUsers: 2847,
-          totalFreelancers: 1623,
-          totalClients: 1224,
-          activeProjects: 342,
-          totalRevenue: 485960,
-          monthlyRevenue: 68420,
-          pendingApprovals: 23,
-          systemHealth: 99.8,
-        } as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/revenue") {
-      return {
-        success: true,
-        data: [
-          { month: "Jan", revenue: 8500, invoices: 12 },
-          { month: "Feb", revenue: 9200, invoices: 15 },
-          { month: "Mar", revenue: 7800, invoices: 10 },
-          { month: "Apr", revenue: 10500, invoices: 18 },
-          { month: "May", revenue: 12300, invoices: 22 },
-          { month: "Jun", revenue: 11200, invoices: 19 },
-        ] as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/activity") {
-      return {
-        success: true,
-        data: [
-          {
-            id: 1,
-            type: "invoice_paid",
-            title: "Invoice paid",
-            description: "Acme Corp - $2,500",
-            timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            id: 2,
-            type: "contract_signed",
-            title: "Contract signed",
-            description: "John Doe - Web Development",
-            timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            id: 3,
-            type: "client_added",
-            title: "New client added",
-            description: "Tech Solutions Inc.",
-            timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString(),
-          },
-        ] as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/upcoming-deadlines") {
-      return {
-        success: true,
-        data: [
-          {
-            id: 1,
-            type: "contract",
-            title: "Contract expires",
-            client: "Acme Corp",
-            date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-            urgent: true,
-          },
-          {
-            id: 2,
-            type: "invoice",
-            title: "Invoice due",
-            client: "Tech Solutions",
-            date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-            urgent: false,
-          },
-        ] as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/client-projects") {
-      return {
-        success: true,
-        data: [
-          {
-            id: 1,
-            title: "E-commerce Website",
-            freelancer: "Sarah Johnson",
-            progress: 85,
-            deadline: "2024-02-15",
-            budget: 5000,
-            status: "In Progress",
-          },
-          {
-            id: 2,
-            title: "Mobile App Design",
-            freelancer: "Mike Chen",
-            progress: 60,
-            deadline: "2024-02-28",
-            budget: 3500,
-            status: "In Progress",
-          },
-        ] as T,
-      };
-    }
-
-    if (endpoint === "/dashboard/client-freelancers") {
-      return {
-        success: true,
-        data: [
-          {
-            id: 1,
-            name: "Sarah Johnson",
-            specialty: "Web Development",
-            rating: 4.9,
-            projects: 3,
-            avatar: "/placeholder.svg",
-            totalEarned: 12500,
-          },
-          {
-            id: 2,
-            name: "Mike Chen",
-            specialty: "UI/UX Design",
-            rating: 4.8,
-            projects: 2,
-            avatar: "/placeholder.svg",
-            totalEarned: 8500,
-          },
-        ] as T,
-      };
-    }
-
-    if (endpoint === "/contracts") {
-      return {
-        success: true,
-        data: [
-          { id: 1, title: "Web Development", status: "signed", clientId: 1 },
-          { id: 2, title: "App Design", status: "sent", clientId: 2 },
-          { id: 3, title: "Branding", status: "draft", clientId: 3 },
-        ] as T,
       };
     }
 
@@ -634,32 +459,12 @@ export class DashboardApi {
     return apiClient.get("/dashboard/stats");
   }
 
-  static async getClientStats() {
-    return apiClient.get("/dashboard/client-stats");
-  }
-
-  static async getAdminStats() {
-    return apiClient.get("/dashboard/admin-stats");
-  }
-
   static async getRevenueChart(period?: string) {
     return apiClient.get("/dashboard/revenue", { period });
   }
 
   static async getRecentActivity() {
     return apiClient.get("/dashboard/activity");
-  }
-
-  static async getUpcomingDeadlines() {
-    return apiClient.get("/dashboard/upcoming-deadlines");
-  }
-
-  static async getClientProjects(limit?: number) {
-    return apiClient.get("/dashboard/client-projects", { limit });
-  }
-
-  static async getClientFreelancers(limit?: number) {
-    return apiClient.get("/dashboard/client-freelancers", { limit });
   }
 }
 
