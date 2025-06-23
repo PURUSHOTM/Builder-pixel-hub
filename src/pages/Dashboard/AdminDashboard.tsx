@@ -38,108 +38,59 @@ import {
 import { DashboardApi } from "../../lib/api/client";
 import { toast } from "sonner";
 
-// Mock data - in real app this would come from API
-const platformStats = {
-  totalUsers: 2847,
-  totalFreelancers: 1623,
-  totalClients: 1224,
-  activeProjects: 342,
-  totalRevenue: 485960,
-  monthlyRevenue: 68420,
-  pendingApprovals: 23,
-  systemHealth: 99.8,
+// Activity type icon mapping
+const getActivityIcon = (type: string) => {
+  switch (type) {
+    case "user_verification":
+      return UserCheck;
+    case "payment_processed":
+      return DollarSign;
+    case "dispute_resolved":
+      return CheckCircle;
+    case "system_alert":
+      return Settings;
+    case "contract_signed":
+      return FileText;
+    case "invoice_paid":
+      return Receipt;
+    default:
+      return Activity;
+  }
 };
 
-const userGrowthData = [
-  { month: "Jan", freelancers: 1250, clients: 890 },
-  { month: "Feb", freelancers: 1340, clients: 950 },
-  { month: "Mar", freelancers: 1420, clients: 1020 },
-  { month: "Apr", freelancers: 1510, clients: 1080 },
-  { month: "May", freelancers: 1580, clients: 1150 },
-  { month: "Jun", freelancers: 1623, clients: 1224 },
-];
+// Activity type color mapping
+const getActivityColor = (type: string) => {
+  switch (type) {
+    case "user_verification":
+      return "text-green-600";
+    case "payment_processed":
+      return "text-blue-600";
+    case "dispute_resolved":
+      return "text-green-600";
+    case "system_alert":
+      return "text-purple-600";
+    case "contract_signed":
+      return "text-blue-600";
+    case "invoice_paid":
+      return "text-green-600";
+    default:
+      return "text-gray-600";
+  }
+};
 
-const revenueData = [
-  { month: "Jan", revenue: 52000 },
-  { month: "Feb", revenue: 58000 },
-  { month: "Mar", revenue: 61000 },
-  { month: "Apr", revenue: 63000 },
-  { month: "May", revenue: 66000 },
-  { month: "Jun", revenue: 68420 },
-];
+// Format time ago
+const formatTimeAgo = (timestamp: string) => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = Math.floor(
+    (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+  );
 
-const projectStatusData = [
-  { name: "Active", value: 342, color: "#059669" },
-  { name: "Completed", value: 1256, color: "#3b82f6" },
-  { name: "On Hold", value: 89, color: "#f59e0b" },
-  { name: "Cancelled", value: 43, color: "#ef4444" },
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    type: "user_verification",
-    title: "User verified",
-    description: "New freelancer: Alex Chen verified",
-    time: "15 minutes ago",
-    icon: UserCheck,
-    color: "text-green-600",
-  },
-  {
-    id: 2,
-    type: "payment_processed",
-    title: "Payment processed",
-    description: "Platform fee: $1,250 collected",
-    time: "1 hour ago",
-    icon: DollarSign,
-    color: "text-blue-600",
-  },
-  {
-    id: 3,
-    type: "dispute_resolved",
-    title: "Dispute resolved",
-    description: "Project #P-2847 dispute closed",
-    time: "3 hours ago",
-    icon: CheckCircle,
-    color: "text-green-600",
-  },
-  {
-    id: 4,
-    type: "system_alert",
-    title: "System maintenance",
-    description: "Scheduled maintenance completed",
-    time: "6 hours ago",
-    icon: Settings,
-    color: "text-purple-600",
-  },
-];
-
-const pendingApprovals = [
-  {
-    id: 1,
-    type: "Profile verification",
-    user: "Jennifer Rodriguez",
-    userType: "Freelancer",
-    submitted: "2 hours ago",
-    priority: "high",
-  },
-  {
-    id: 2,
-    type: "Payout request",
-    user: "TechCorp Inc.",
-    userType: "Client",
-    submitted: "4 hours ago",
-    priority: "medium",
-  },
-  {
-    id: 3,
-    type: "Dispute escalation",
-    user: "Project #P-2851",
-    userType: "Project",
-    submitted: "1 day ago",
-    priority: "high",
-  },
-];
+  if (diffInHours < 1) return "Just now";
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 48) return "1 day ago";
+  return `${Math.floor(diffInHours / 24)} days ago`;
+};
 
 export function AdminDashboard() {
   return (
