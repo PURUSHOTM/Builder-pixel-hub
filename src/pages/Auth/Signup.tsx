@@ -137,6 +137,10 @@ export function Signup() {
         {/* Account Type */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">I am joining as a</Label>
+          <input
+            type="hidden"
+            {...register("role", { required: "Please select an account type" })}
+          />
           <div className="grid grid-cols-2 gap-3">
             <div
               className={cn(
