@@ -133,10 +133,11 @@ export function FreelancerDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Welcome back, Freelancer! 👋
+            Business Dashboard 👋
           </h1>
           <p className="text-muted-foreground mt-1">
-            Here's what's happening with your business today.
+            Track your revenue, manage clients, and grow your freelance
+            business.
           </p>
         </div>
         <div className="flex gap-3">
