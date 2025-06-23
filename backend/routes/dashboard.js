@@ -372,4 +372,284 @@ router.get("/upcoming-deadlines", async (req, res, next) => {
   }
 });
 
+// @route   GET /api/dashboard/client-stats
+// @desc    Get dashboard statistics for clients
+// @access  Private (Client role)
+router.get("/client-stats", async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+
+    // For clients, we need to get stats about their projects, freelancers, and spending
+    const [
+      activeProjects,
+      completedProjects,
+      totalSpent,
+      monthlySpent,
+      activeFreelancers,
+      pendingPayments,
+    ] = await Promise.all([
+      Contract.countDocuments({
+        clientId: userId, // For clients, they are the client in contracts
+        status: { $in: ["sent", "signed"] },
+        isActive: true,
+      }),
+      Contract.countDocuments({
+        clientId: userId,
+        status: "completed",
+        isActive: true,
+      }),
+      // Total amount from signed contracts
+      Contract.aggregate([
+        {
+          $match: {
+            clientId: userId,
+            status: { $in: ["signed", "completed"] },
+            isActive: true,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$amount" },
+          },
+        },
+      ]),
+      // Monthly spending (current month from signed contracts)
+      Contract.aggregate([
+        {
+          $match: {
+            clientId: userId,
+            status: { $in: ["signed", "completed"] },
+            isActive: true,
+            signedAt: {
+              $gte: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                1,
+              ),
+              $lt: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() + 1,
+                1,
+              ),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$amount" },
+          },
+        },
+      ]),
+      // Count unique freelancers from contracts
+      Contract.distinct("userId", {
+        clientId: userId,
+        status: { $in: ["sent", "signed", "completed"] },
+        isActive: true,
+      }),
+      // Pending invoices from freelancers
+      Invoice.countDocuments({
+        clientId: userId,
+        status: { $in: ["sent", "overdue"] },
+        isActive: true,
+      }),
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        activeProjects,
+        completedProjects,
+        totalSpent: totalSpent[0]?.total || 0,
+        monthlySpent: monthlySpent[0]?.total || 0,
+        activeFreelancers: activeFreelancers.length,
+        pendingPayments,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/dashboard/admin-stats
+// @desc    Get dashboard statistics for admins
+// @access  Private (Admin role)
+router.get("/admin-stats", async (req, res, next) => {
+  try {
+    // Admin sees platform-wide statistics
+    const [
+      totalUsers,
+      totalFreelancers,
+      totalClients,
+      activeProjects,
+      totalRevenue,
+      monthlyRevenue,
+      pendingApprovals,
+    ] = await Promise.all([
+      User.countDocuments({ isActive: true }),
+      User.countDocuments({ role: "freelancer", isActive: true }),
+      User.countDocuments({ role: "client", isActive: true }),
+      Contract.countDocuments({
+        status: { $in: ["sent", "signed"] },
+        isActive: true,
+      }),
+      // Platform total revenue (could be commission-based)
+      Invoice.aggregate([
+        {
+          $match: {
+            status: "paid",
+            isActive: true,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$total" },
+          },
+        },
+      ]),
+      // Monthly platform revenue
+      Invoice.aggregate([
+        {
+          $match: {
+            status: "paid",
+            isActive: true,
+            paidAt: {
+              $gte: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth(),
+                1,
+              ),
+              $lt: new Date(
+                new Date().getFullYear(),
+                new Date().getMonth() + 1,
+                1,
+              ),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: "$total" },
+          },
+        },
+      ]),
+      // Mock pending approvals (you can extend this based on your approval system)
+      Contract.countDocuments({
+        status: "draft",
+        isActive: true,
+      }),
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        totalFreelancers,
+        totalClients,
+        activeProjects,
+        totalRevenue: totalRevenue[0]?.total || 0,
+        monthlyRevenue: monthlyRevenue[0]?.total || 0,
+        pendingApprovals,
+        systemHealth: 99.8, // Mock system health - you can integrate with monitoring tools
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/dashboard/client-projects
+// @desc    Get projects for client dashboard
+// @access  Private (Client role)
+router.get("/client-projects", async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const limit = parseInt(req.query.limit) || 5;
+
+    // Get active projects for this client
+    const projects = await Contract.find({
+      clientId: userId,
+      status: { $in: ["sent", "signed"] },
+      isActive: true,
+    })
+      .populate("userId", "name email")
+      .sort({ updatedAt: -1 })
+      .limit(limit);
+
+    // Format the response to match frontend expectations
+    const formattedProjects = projects.map((contract) => ({
+      id: contract._id,
+      title: contract.title,
+      freelancer: contract.userId?.name || "Unknown",
+      progress: Math.floor(Math.random() * 100), // TODO: Add actual progress tracking
+      deadline: contract.expiresAt,
+      budget: contract.amount,
+      status: contract.status === "signed" ? "In Progress" : "Pending",
+    }));
+
+    res.json({
+      success: true,
+      data: formattedProjects,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   GET /api/dashboard/client-freelancers
+// @desc    Get top freelancers for client dashboard
+// @access  Private (Client role)
+router.get("/client-freelancers", async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const limit = parseInt(req.query.limit) || 5;
+
+    // Get freelancers this client has worked with
+    const contracts = await Contract.find({
+      clientId: userId,
+      status: { $in: ["signed", "completed"] },
+      isActive: true,
+    })
+      .populate("userId", "name email")
+      .sort({ signedAt: -1 });
+
+    // Group by freelancer and calculate stats
+    const freelancerStats = {};
+    contracts.forEach((contract) => {
+      const freelancerId = contract.userId?._id?.toString();
+      if (freelancerId) {
+        if (!freelancerStats[freelancerId]) {
+          freelancerStats[freelancerId] = {
+            id: freelancerId,
+            name: contract.userId.name,
+            email: contract.userId.email,
+            projects: 0,
+            totalEarned: 0,
+            rating: 4.8, // Mock rating - you can add actual rating system
+            specialty: "Full Stack Developer", // Mock specialty
+            avatar: "/placeholder.svg",
+          };
+        }
+        freelancerStats[freelancerId].projects++;
+        freelancerStats[freelancerId].totalEarned += contract.amount;
+      }
+    });
+
+    // Convert to array and limit
+    const topFreelancers = Object.values(freelancerStats)
+      .sort((a, b) => b.totalEarned - a.totalEarned)
+      .slice(0, limit);
+
+    res.json({
+      success: true,
+      data: topFreelancers,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
