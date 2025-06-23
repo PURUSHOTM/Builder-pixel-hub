@@ -237,34 +237,49 @@ export function Clients() {
     }
   }, [selectedClient, modals.delete]);
 
-  const openEditDialog = (client: Client) => {
-    setSelectedClient(client);
-    setFormData({
-      name: client.name,
-      email: client.email,
-      company: client.company,
-      phone: client.phone || "",
-      address: {
-        street: client.address?.street || "",
-        city: client.address?.city || "",
-        state: client.address?.state || "",
-        zipCode: client.address?.zipCode || "",
-        country: client.address?.country || "United States",
-      },
-      notes: client.notes || "",
-    });
-    setIsEditDialogOpen(true);
-  };
+  const openEditDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      setFormData({
+        name: client.name,
+        email: client.email,
+        company: client.company,
+        phone: client.phone || "",
+        address: {
+          street: client.address?.street || "",
+          city: client.address?.city || "",
+          state: client.address?.state || "",
+          zipCode: client.address?.zipCode || "",
+          country: client.address?.country || "United States",
+        },
+        notes: client.notes || "",
+      });
+      modals.edit.open();
+    },
+    [modals.edit],
+  );
 
-  const openViewDialog = (client: Client) => {
-    setSelectedClient(client);
-    setIsViewDialogOpen(true);
-  };
+  const openViewDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      modals.view.open();
+    },
+    [modals.view],
+  );
 
-  const openDeleteDialog = (client: Client) => {
-    setSelectedClient(client);
-    setIsDeleteDialogOpen(true);
-  };
+  const openDeleteDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      modals.delete.open();
+    },
+    [modals.delete],
+  );
+
+  // Reset form data when modals close
+  const resetFormData = useCallback(() => {
+    setFormData(initialFormData);
+    setSelectedClient(null);
+  }, []);
 
   const getClientInitials = (name: string) => {
     return name
