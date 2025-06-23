@@ -229,7 +229,19 @@ class ApiClient {
         error.message.includes("fetch")
       ) {
         console.log(`[DEMO MODE] Network error caught, using mock response`);
-        return this.getMockResponse<T>(endpoint, options.method || "GET");
+        let requestData;
+        if (options.body && typeof options.body === "string") {
+          try {
+            requestData = JSON.parse(options.body);
+          } catch (e) {
+            requestData = null;
+          }
+        }
+        return this.getMockResponse<T>(
+          endpoint,
+          options.method || "GET",
+          requestData,
+        );
       }
 
       // Handle network errors gracefully
