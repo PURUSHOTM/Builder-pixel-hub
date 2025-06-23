@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Users,
   Plus,
@@ -30,32 +30,17 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../components/ui/alert-dialog";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Modal, FormModal } from "../../components/common";
+import { useModals } from "../../hooks/use-modal";
 import { ClientsApi } from "../../lib/api/client";
 import { toast } from "sonner";
 
@@ -113,11 +98,10 @@ export function Clients() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [formData, setFormData] = useState<ClientFormData>(initialFormData);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Modal management using the custom hook
+  const modals = useModals(["create", "edit", "view", "delete"]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -158,51 +142,81 @@ export function Clients() {
     setCurrentPage(1);
   };
 
-  const handleCreate = async () => {
-    try {
-      setSubmitting(true);
-      const response = await ClientsApi.createClient(formData);
+  const handleCreate = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
 
-      if (response.success) {
-        toast.success("Client created successfully");
-        setIsCreateDialogOpen(false);
-        setFormData(initialFormData);
-        fetchClients();
+      // Basic validation
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.company.trim()
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
       }
-    } catch (error: any) {
-      console.error("Error creating client:", error);
-      toast.error(error.message || "Failed to create client");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
-  const handleEdit = async () => {
-    if (!selectedClient) return;
+      try {
+        setSubmitting(true);
+        const response = await ClientsApi.createClient(formData);
 
-    try {
-      setSubmitting(true);
-      const response = await ClientsApi.updateClient(
-        selectedClient._id,
-        formData,
-      );
-
-      if (response.success) {
-        toast.success("Client updated successfully");
-        setIsEditDialogOpen(false);
-        setSelectedClient(null);
-        setFormData(initialFormData);
-        fetchClients();
+        if (response.success) {
+          toast.success("Client created successfully");
+          modals.create.close();
+          setFormData(initialFormData);
+          fetchClients();
+        }
+      } catch (error: any) {
+        console.error("Error creating client:", error);
+        toast.error(error.message || "Failed to create client");
+      } finally {
+        setSubmitting(false);
       }
-    } catch (error: any) {
-      console.error("Error updating client:", error);
-      toast.error(error.message || "Failed to update client");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    },
+    [formData, modals.create],
+  );
 
-  const handleDelete = async () => {
+  const handleEdit = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+
+      if (!selectedClient) return;
+
+      // Basic validation
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.company.trim()
+      ) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
+      try {
+        setSubmitting(true);
+        const response = await ClientsApi.updateClient(
+          selectedClient._id,
+          formData,
+        );
+
+        if (response.success) {
+          toast.success("Client updated successfully");
+          modals.edit.close();
+          setSelectedClient(null);
+          setFormData(initialFormData);
+          fetchClients();
+        }
+      } catch (error: any) {
+        console.error("Error updating client:", error);
+        toast.error(error.message || "Failed to update client");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [selectedClient, formData, modals.edit],
+  );
+
+  const handleDelete = useCallback(async () => {
     if (!selectedClient) return;
 
     try {
@@ -211,7 +225,7 @@ export function Clients() {
 
       if (response.success) {
         toast.success("Client deleted successfully");
-        setIsDeleteDialogOpen(false);
+        modals.delete.close();
         setSelectedClient(null);
         fetchClients();
       }
@@ -221,36 +235,51 @@ export function Clients() {
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [selectedClient, modals.delete]);
 
-  const openEditDialog = (client: Client) => {
-    setSelectedClient(client);
-    setFormData({
-      name: client.name,
-      email: client.email,
-      company: client.company,
-      phone: client.phone || "",
-      address: {
-        street: client.address?.street || "",
-        city: client.address?.city || "",
-        state: client.address?.state || "",
-        zipCode: client.address?.zipCode || "",
-        country: client.address?.country || "United States",
-      },
-      notes: client.notes || "",
-    });
-    setIsEditDialogOpen(true);
-  };
+  const openEditDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      setFormData({
+        name: client.name,
+        email: client.email,
+        company: client.company,
+        phone: client.phone || "",
+        address: {
+          street: client.address?.street || "",
+          city: client.address?.city || "",
+          state: client.address?.state || "",
+          zipCode: client.address?.zipCode || "",
+          country: client.address?.country || "United States",
+        },
+        notes: client.notes || "",
+      });
+      modals.edit.open();
+    },
+    [modals.edit],
+  );
 
-  const openViewDialog = (client: Client) => {
-    setSelectedClient(client);
-    setIsViewDialogOpen(true);
-  };
+  const openViewDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      modals.view.open();
+    },
+    [modals.view],
+  );
 
-  const openDeleteDialog = (client: Client) => {
-    setSelectedClient(client);
-    setIsDeleteDialogOpen(true);
-  };
+  const openDeleteDialog = useCallback(
+    (client: Client) => {
+      setSelectedClient(client);
+      modals.delete.open();
+    },
+    [modals.delete],
+  );
+
+  // Reset form data when modals close
+  const resetFormData = useCallback(() => {
+    setFormData(initialFormData);
+    setSelectedClient(null);
+  }, []);
 
   const getClientInitials = (name: string) => {
     return name
@@ -272,6 +301,18 @@ export function Clients() {
     return parts.length > 0 ? parts.join(", ") : "No address provided";
   };
 
+  // Memoized input handlers to prevent unnecessary re-renders
+  const handleInputChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleAddressChange = useCallback((field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: { ...prev.address, [field]: value },
+    }));
+  }, []);
+
   const ClientForm = () => (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,8 +321,9 @@ export function Clients() {
           <Input
             id="name"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="John Doe"
+            autoComplete="name"
           />
         </div>
         <div className="space-y-2">
@@ -290,10 +332,9 @@ export function Clients() {
             id="email"
             type="email"
             value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
+            onChange={(e) => handleInputChange("email", e.target.value)}
             placeholder="john@example.com"
+            autoComplete="email"
           />
         </div>
       </div>
@@ -304,21 +345,20 @@ export function Clients() {
           <Input
             id="company"
             value={formData.company}
-            onChange={(e) =>
-              setFormData({ ...formData, company: e.target.value })
-            }
+            onChange={(e) => handleInputChange("company", e.target.value)}
             placeholder="Acme Corp"
+            autoComplete="organization"
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input
             id="phone"
+            type="tel"
             value={formData.phone}
-            onChange={(e) =>
-              setFormData({ ...formData, phone: e.target.value })
-            }
+            onChange={(e) => handleInputChange("phone", e.target.value)}
             placeholder="+1 234 567 8900"
+            autoComplete="tel"
           />
         </div>
       </div>
@@ -330,13 +370,9 @@ export function Clients() {
           <Input
             id="street"
             value={formData.address.street}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                address: { ...formData.address, street: e.target.value },
-              })
-            }
+            onChange={(e) => handleAddressChange("street", e.target.value)}
             placeholder="123 Main St"
+            autoComplete="street-address"
           />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -345,13 +381,9 @@ export function Clients() {
             <Input
               id="city"
               value={formData.address.city}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, city: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("city", e.target.value)}
               placeholder="San Francisco"
+              autoComplete="address-level2"
             />
           </div>
           <div className="space-y-2">
@@ -359,13 +391,9 @@ export function Clients() {
             <Input
               id="state"
               value={formData.address.state}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, state: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("state", e.target.value)}
               placeholder="CA"
+              autoComplete="address-level1"
             />
           </div>
           <div className="space-y-2">
@@ -373,13 +401,9 @@ export function Clients() {
             <Input
               id="zipCode"
               value={formData.address.zipCode}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, zipCode: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("zipCode", e.target.value)}
               placeholder="94105"
+              autoComplete="postal-code"
             />
           </div>
           <div className="space-y-2">
@@ -387,13 +411,9 @@ export function Clients() {
             <Input
               id="country"
               value={formData.address.country}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  address: { ...formData.address, country: e.target.value },
-                })
-              }
+              onChange={(e) => handleAddressChange("country", e.target.value)}
               placeholder="United States"
+              autoComplete="country-name"
             />
           </div>
         </div>
@@ -404,7 +424,7 @@ export function Clients() {
         <Textarea
           id="notes"
           value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          onChange={(e) => handleInputChange("notes", e.target.value)}
           placeholder="Additional notes about this client..."
           rows={3}
         />
@@ -422,31 +442,13 @@ export function Clients() {
             Manage your client relationships and contact information
           </p>
         </div>
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="gap-2 bg-primary hover:bg-primary/90">
-              <Plus className="w-4 h-4" />
-              Add Client
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Add New Client</DialogTitle>
-            </DialogHeader>
-            <ClientForm />
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsCreateDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleCreate} disabled={submitting}>
-                {submitting ? "Creating..." : "Create Client"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button
+          className="gap-2 bg-primary hover:bg-primary/90"
+          onClick={modals.create.open}
+        >
+          <Plus className="w-4 h-4" />
+          Add Client
+        </Button>
       </div>
 
       {/* Search and Filters */}
@@ -545,7 +547,7 @@ export function Clients() {
                   : "Start building your client base by adding your first client."}
               </p>
               {!searchTerm && (
-                <Button onClick={() => setIsCreateDialogOpen(true)}>
+                <Button onClick={modals.create.open}>
                   Add Your First Client
                 </Button>
               )}
@@ -694,125 +696,142 @@ export function Clients() {
         </CardContent>
       </Card>
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Client</DialogTitle>
-          </DialogHeader>
-          <ClientForm />
-          <div className="flex justify-end gap-2 pt-4">
+      {/* Create Client Modal */}
+      <FormModal
+        isOpen={modals.create.isOpen}
+        onClose={() => {
+          modals.create.close();
+          resetFormData();
+        }}
+        onSubmit={handleCreate}
+        title="Add New Client"
+        submitLabel="Create Client"
+        isSubmitting={submitting}
+        size="lg"
+      >
+        <ClientForm />
+      </FormModal>
+
+      {/* Edit Client Modal */}
+      <FormModal
+        isOpen={modals.edit.isOpen}
+        onClose={() => {
+          modals.edit.close();
+          resetFormData();
+        }}
+        onSubmit={handleEdit}
+        title="Edit Client"
+        submitLabel="Save Changes"
+        isSubmitting={submitting}
+        size="lg"
+      >
+        <ClientForm />
+      </FormModal>
+
+      {/* View Client Modal */}
+      <Modal
+        isOpen={modals.view.isOpen}
+        onClose={modals.view.close}
+        title="Client Details"
+        size="lg"
+      >
+        {selectedClient && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                  {getClientInitials(selectedClient.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="text-2xl font-semibold">
+                  {selectedClient.name}
+                </h3>
+                <p className="text-muted-foreground">
+                  {selectedClient.company}
+                </p>
+                <Badge variant="secondary" className="mt-2">
+                  Client since{" "}
+                  {new Date(selectedClient.createdAt).toLocaleDateString()}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h4 className="font-semibold">Contact Information</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedClient.email}</span>
+                  </div>
+                  {selectedClient.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span>{selectedClient.phone}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Building className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedClient.company}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-semibold">Address</h4>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                  <div className="text-sm">
+                    {formatAddress(selectedClient.address)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {selectedClient.notes && (
+              <div className="space-y-2">
+                <h4 className="font-semibold">Notes</h4>
+                <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                  {selectedClient.notes}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={modals.delete.isOpen}
+        onClose={modals.delete.close}
+        title="Are you sure?"
+        description={`This will permanently delete the client "${selectedClient?.name}" and all associated data. This action cannot be undone.`}
+        size="sm"
+      >
+        <Modal.Footer>
+          <div className="flex gap-2 w-full sm:w-auto">
             <Button
+              type="button"
               variant="outline"
-              onClick={() => setIsEditDialogOpen(false)}
+              onClick={modals.delete.close}
+              disabled={submitting}
+              className="flex-1 sm:flex-none"
             >
               Cancel
             </Button>
-            <Button onClick={handleEdit} disabled={submitting}>
-              {submitting ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* View Dialog */}
-      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Client Details</DialogTitle>
-          </DialogHeader>
-          {selectedClient && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                    {getClientInitials(selectedClient.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-2xl font-semibold">
-                    {selectedClient.name}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {selectedClient.company}
-                  </p>
-                  <Badge variant="secondary" className="mt-2">
-                    Client since{" "}
-                    {new Date(selectedClient.createdAt).toLocaleDateString()}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Contact Information</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <span>{selectedClient.email}</span>
-                    </div>
-                    {selectedClient.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span>{selectedClient.phone}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <Building className="w-4 h-4 text-muted-foreground" />
-                      <span>{selectedClient.company}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Address</h4>
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                    <div className="text-sm">
-                      {formatAddress(selectedClient.address)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {selectedClient.notes && (
-                <div className="space-y-2">
-                  <h4 className="font-semibold">Notes</h4>
-                  <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
-                    {selectedClient.notes}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete the client "{selectedClient?.name}"
-              and all associated data. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <Button
+              type="button"
+              variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
               disabled={submitting}
+              className="flex-1 sm:flex-none"
             >
               {submitting ? "Deleting..." : "Delete Client"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
