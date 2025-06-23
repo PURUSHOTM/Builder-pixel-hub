@@ -95,6 +95,129 @@ const formatTimeAgo = (timestamp: string) => {
 };
 
 export function ClientDashboard() {
+  const [stats, setStats] = useState({
+    activeProjects: 0,
+    completedProjects: 0,
+    totalSpent: 0,
+    monthlySpent: 0,
+    activeFreelancers: 0,
+    pendingPayments: 0,
+  });
+  const [projectData, setProjectData] = useState([]);
+  const [budgetData, setBudgetData] = useState([]);
+  const [activeProjects, setActiveProjects] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [topFreelancers, setTopFreelancers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch all dashboard data in parallel
+        const [
+          statsResponse,
+          projectsResponse,
+          freelancersResponse,
+          activityResponse,
+        ] = await Promise.all([
+          DashboardApi.getClientStats(),
+          DashboardApi.getClientProjects(3),
+          DashboardApi.getClientFreelancers(3),
+          DashboardApi.getRecentActivity(),
+        ]);
+
+        if (statsResponse.success) {
+          setStats(statsResponse.data);
+
+          // Create budget data from stats
+          const budget = [
+            { name: "Completed", value: 75, color: "#059669" },
+            { name: "In Progress", value: 60, color: "#d97706" },
+            { name: "Planned", value: 40, color: "#64748b" },
+          ];
+          setBudgetData(budget);
+
+          // Create mock project timeline data
+          const timeline = [
+            {
+              month: "Jan",
+              completed: Math.floor(statsResponse.data.completedProjects * 0.1),
+              active: Math.floor(statsResponse.data.activeProjects * 0.3),
+            },
+            {
+              month: "Feb",
+              completed: Math.floor(
+                statsResponse.data.completedProjects * 0.15,
+              ),
+              active: Math.floor(statsResponse.data.activeProjects * 0.4),
+            },
+            {
+              month: "Mar",
+              completed: Math.floor(statsResponse.data.completedProjects * 0.1),
+              active: Math.floor(statsResponse.data.activeProjects * 0.5),
+            },
+            {
+              month: "Apr",
+              completed: Math.floor(
+                statsResponse.data.completedProjects * 0.25,
+              ),
+              active: Math.floor(statsResponse.data.activeProjects * 0.7),
+            },
+            {
+              month: "May",
+              completed: Math.floor(statsResponse.data.completedProjects * 0.2),
+              active: Math.floor(statsResponse.data.activeProjects * 0.9),
+            },
+            {
+              month: "Jun",
+              completed: Math.floor(statsResponse.data.completedProjects * 0.2),
+              active: statsResponse.data.activeProjects,
+            },
+          ];
+          setProjectData(timeline);
+        }
+
+        if (projectsResponse.success) {
+          setActiveProjects(projectsResponse.data);
+        }
+
+        if (freelancersResponse.success) {
+          setTopFreelancers(freelancersResponse.data);
+        }
+
+        if (activityResponse.success) {
+          // Format activity data for display
+          const formattedActivity = activityResponse.data
+            .slice(0, 4)
+            .map((activity: any) => ({
+              ...activity,
+              icon: getActivityIcon(activity.type),
+              color: getActivityColor(activity.type),
+              time: formatTimeAgo(activity.timestamp),
+            }));
+          setRecentActivity(formattedActivity);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        toast.error("Failed to load dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
