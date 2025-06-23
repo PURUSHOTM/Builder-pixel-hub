@@ -28,6 +28,10 @@ export const validateRegister = [
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters"),
+  body("role")
+    .optional()
+    .isIn(["freelancer", "client", "admin"])
+    .withMessage("Role must be freelancer, client, or admin"),
   handleValidationErrors,
 ];
 

@@ -13,15 +13,68 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useAuth } from "../../lib/auth/context";
+import { getRoleDisplayName } from "../../lib/navigation";
 
-// Page titles mapping
-const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/clients": "Clients",
-  "/contracts": "Contracts",
-  "/invoices": "Invoices",
-  "/reports": "Reports",
-  "/settings": "Settings",
+// Page titles mapping with role-specific context
+const getPageTitleAndDescription = (pathname: string, userRole?: string) => {
+  const baseTitles: Record<string, { title: string; description: string }> = {
+    "/dashboard": {
+      title: "Dashboard",
+      description:
+        userRole === "client"
+          ? "Your project overview and team updates"
+          : userRole === "admin"
+            ? "System overview and platform metrics"
+            : "Your business overview and recent activity",
+    },
+    "/clients": {
+      title: "Clients",
+      description: "Manage your client relationships and contacts",
+    },
+    "/projects": {
+      title: "Projects",
+      description: "Track your active and completed projects",
+    },
+    "/freelancers": {
+      title: "Freelancers",
+      description: "Find and collaborate with talented professionals",
+    },
+    "/calendar": {
+      title: "Calendar",
+      description: "Manage meetings, deadlines, and schedule",
+    },
+    "/contracts": {
+      title: "Contracts",
+      description:
+        userRole === "client"
+          ? "Review and manage your project agreements"
+          : "Create and manage client contracts",
+    },
+    "/invoices": {
+      title: "Invoices",
+      description:
+        userRole === "client"
+          ? "View payment history and pending invoices"
+          : "Track payments and manage billing",
+    },
+    "/reports": {
+      title: "Reports",
+      description:
+        userRole === "client"
+          ? "Project analytics and performance insights"
+          : userRole === "admin"
+            ? "Platform analytics and business intelligence"
+            : "Business analytics and financial reports",
+    },
+    "/settings": {
+      title: "Settings",
+      description: "Configure your account and preferences",
+    },
+  };
+
+  return (
+    baseTitles[pathname] || { title: "Dashboard", description: "Welcome back" }
+  );
 };
 
 export function Header() {
@@ -29,7 +82,10 @@ export function Header() {
   const { user, logout } = useAuth();
   const [isDark, setIsDark] = React.useState(false);
 
-  const currentTitle = pageTitles[location.pathname] || "Dashboard";
+  const { title: currentTitle, description } = getPageTitleAndDescription(
+    location.pathname,
+    user?.role,
+  );
 
   const toggleTheme = () => {
     setIsDark(!isDark);
@@ -45,9 +101,7 @@ export function Header() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold text-foreground">{currentTitle}</h1>
-          <p className="text-sm text-muted-foreground">
-            Welcome back, {user?.name?.split(" ")[0]}
-          </p>
+          <p className="text-sm text-muted-foreground">{description}</p>
         </div>
       </div>
 
@@ -146,6 +200,11 @@ export function Header() {
                 <p className="text-xs leading-none text-muted-foreground truncate">
                   {user?.email}
                 </p>
+                {user?.role && (
+                  <p className="text-xs leading-none text-primary truncate">
+                    {getRoleDisplayName(user.role)}
+                  </p>
+                )}
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />

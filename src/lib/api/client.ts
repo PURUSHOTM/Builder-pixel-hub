@@ -311,6 +311,7 @@ export class AuthApi {
     name: string;
     email: string;
     password: string;
+    role?: string;
   }) {
     return apiClient.post("/auth/signup", credentials);
   }

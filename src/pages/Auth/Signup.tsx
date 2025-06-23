@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Eye, EyeOff, ArrowRight, Check } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Check, Users, Briefcase } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Checkbox } from "../../components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 import { useAuth } from "../../lib/auth/context";
 import { SignupCredentials } from "../../lib/types";
 import { cn } from "../../lib/utils";
@@ -29,9 +36,14 @@ export function Signup() {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
     setError,
-  } = useForm<SignupCredentials>();
+  } = useForm<SignupCredentials>({
+    defaultValues: {
+      role: "freelancer",
+    },
+  });
 
   const password = watch("password", "");
 
@@ -119,6 +131,68 @@ export function Signup() {
           />
           {errors.email && (
             <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
+        </div>
+
+        {/* Account Type */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">I am joining as a</Label>
+          <div className="grid grid-cols-2 gap-3">
+            <div
+              className={cn(
+                "border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-primary",
+                watch("role") === "freelancer"
+                  ? "border-primary bg-primary/5"
+                  : "border-border",
+              )}
+              onClick={() => {
+                const currentValue = watch("role");
+                const newValue =
+                  currentValue === "freelancer" ? "" : "freelancer";
+                setValue("role", newValue as "freelancer" | "client");
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-100">
+                  <Briefcase className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Freelancer</p>
+                  <p className="text-xs text-muted-foreground">
+                    Provide services and manage clients
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={cn(
+                "border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:border-primary",
+                watch("role") === "client"
+                  ? "border-primary bg-primary/5"
+                  : "border-border",
+              )}
+              onClick={() => {
+                const currentValue = watch("role");
+                const newValue = currentValue === "client" ? "" : "client";
+                setValue("role", newValue as "freelancer" | "client");
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-100">
+                  <Users className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-sm">Client</p>
+                  <p className="text-xs text-muted-foreground">
+                    Hire freelancers and manage projects
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {errors.role && (
+            <p className="text-sm text-destructive">{errors.role.message}</p>
           )}
         </div>
 
@@ -243,6 +317,14 @@ export function Signup() {
             </p>
           )}
         </div>
+
+        {/* Hidden role field for form validation */}
+        <input
+          type="hidden"
+          {...register("role", {
+            required: "Please select your account type",
+          })}
+        />
 
         {/* Terms and conditions */}
         <div className="flex items-start gap-3">

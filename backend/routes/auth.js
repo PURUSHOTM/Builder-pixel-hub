@@ -10,7 +10,7 @@ const router = express.Router();
 // @access  Public
 router.post("/register", validateRegister, async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -26,6 +26,7 @@ router.post("/register", validateRegister, async (req, res, next) => {
       name,
       email,
       password,
+      role: role || "freelancer", // default to freelancer if not provided
     });
 
     await user.save();
@@ -58,7 +59,7 @@ router.post("/register", validateRegister, async (req, res, next) => {
 // @access  Public
 router.post("/signup", validateRegister, async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -74,6 +75,7 @@ router.post("/signup", validateRegister, async (req, res, next) => {
       name,
       email,
       password,
+      role: role || "freelancer", // default to freelancer if not provided
     });
 
     await user.save();

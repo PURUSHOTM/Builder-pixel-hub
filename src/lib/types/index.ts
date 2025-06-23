@@ -4,7 +4,7 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  role: "freelancer" | "admin";
+  role: "freelancer" | "client" | "admin";
   createdAt: string;
   updatedAt: string;
 }
@@ -26,6 +26,7 @@ export interface SignupCredentials {
   email: string;
   password: string;
   confirmPassword: string;
+  role: "freelancer" | "client";
 }
 
 // Client Types
