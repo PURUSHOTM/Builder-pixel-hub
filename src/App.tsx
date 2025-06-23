@@ -20,6 +20,7 @@ import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Clients } from "./pages/Clients/Clients";
 import { Projects } from "./pages/Projects/Projects";
 import { Freelancers } from "./pages/Freelancers/Freelancers";
+import { Calendar } from "./pages/Calendar/Calendar";
 import { Contracts } from "./pages/Contracts/Contracts";
 import { Invoices } from "./pages/Invoices/Invoices";
 import { Reports } from "./pages/Reports/Reports";
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="clients" element={<Clients />} />
               <Route path="projects" element={<Projects />} />
               <Route path="freelancers" element={<Freelancers />} />
+              <Route path="calendar" element={<Calendar />} />
               <Route path="contracts" element={<Contracts />} />
               <Route path="invoices" element={<Invoices />} />
               <Route path="reports" element={<Reports />} />
