@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Users,
   Plus,
@@ -30,32 +30,17 @@ import {
   TableRow,
 } from "../../components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../../components/ui/alert-dialog";
 import { Label } from "../../components/ui/label";
 import { Textarea } from "../../components/ui/textarea";
 import { Badge } from "../../components/ui/badge";
 import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+import { Modal, FormModal } from "../../components/common";
+import { useModals } from "../../hooks/use-modal";
 import { ClientsApi } from "../../lib/api/client";
 import { toast } from "sonner";
 
