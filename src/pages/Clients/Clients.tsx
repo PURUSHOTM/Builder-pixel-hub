@@ -696,125 +696,142 @@ export function Clients() {
         </CardContent>
       </Card>
 
-      {/* Edit Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Edit Client</DialogTitle>
-          </DialogHeader>
-          <ClientForm />
-          <div className="flex justify-end gap-2 pt-4">
+      {/* Create Client Modal */}
+      <FormModal
+        isOpen={modals.create.isOpen}
+        onClose={() => {
+          modals.create.close();
+          resetFormData();
+        }}
+        onSubmit={handleCreate}
+        title="Add New Client"
+        submitLabel="Create Client"
+        isSubmitting={submitting}
+        size="lg"
+      >
+        <ClientForm />
+      </FormModal>
+
+      {/* Edit Client Modal */}
+      <FormModal
+        isOpen={modals.edit.isOpen}
+        onClose={() => {
+          modals.edit.close();
+          resetFormData();
+        }}
+        onSubmit={handleEdit}
+        title="Edit Client"
+        submitLabel="Save Changes"
+        isSubmitting={submitting}
+        size="lg"
+      >
+        <ClientForm />
+      </FormModal>
+
+      {/* View Client Modal */}
+      <Modal
+        isOpen={modals.view.isOpen}
+        onClose={modals.view.close}
+        title="Client Details"
+        size="lg"
+      >
+        {selectedClient && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="h-16 w-16">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+                  {getClientInitials(selectedClient.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="text-2xl font-semibold">
+                  {selectedClient.name}
+                </h3>
+                <p className="text-muted-foreground">
+                  {selectedClient.company}
+                </p>
+                <Badge variant="secondary" className="mt-2">
+                  Client since{" "}
+                  {new Date(selectedClient.createdAt).toLocaleDateString()}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h4 className="font-semibold">Contact Information</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedClient.email}</span>
+                  </div>
+                  {selectedClient.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <span>{selectedClient.phone}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Building className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedClient.company}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h4 className="font-semibold">Address</h4>
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                  <div className="text-sm">
+                    {formatAddress(selectedClient.address)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {selectedClient.notes && (
+              <div className="space-y-2">
+                <h4 className="font-semibold">Notes</h4>
+                <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                  {selectedClient.notes}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={modals.delete.isOpen}
+        onClose={modals.delete.close}
+        title="Are you sure?"
+        description={`This will permanently delete the client "${selectedClient?.name}" and all associated data. This action cannot be undone.`}
+        size="sm"
+      >
+        <Modal.Footer>
+          <div className="flex gap-2 w-full sm:w-auto">
             <Button
+              type="button"
               variant="outline"
-              onClick={() => setIsEditDialogOpen(false)}
+              onClick={modals.delete.close}
+              disabled={submitting}
+              className="flex-1 sm:flex-none"
             >
               Cancel
             </Button>
-            <Button onClick={handleEdit} disabled={submitting}>
-              {submitting ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* View Dialog */}
-      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Client Details</DialogTitle>
-          </DialogHeader>
-          {selectedClient && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-                    {getClientInitials(selectedClient.name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-2xl font-semibold">
-                    {selectedClient.name}
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {selectedClient.company}
-                  </p>
-                  <Badge variant="secondary" className="mt-2">
-                    Client since{" "}
-                    {new Date(selectedClient.createdAt).toLocaleDateString()}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Contact Information</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <span>{selectedClient.email}</span>
-                    </div>
-                    {selectedClient.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-muted-foreground" />
-                        <span>{selectedClient.phone}</span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <Building className="w-4 h-4 text-muted-foreground" />
-                      <span>{selectedClient.company}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Address</h4>
-                  <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                    <div className="text-sm">
-                      {formatAddress(selectedClient.address)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {selectedClient.notes && (
-                <div className="space-y-2">
-                  <h4 className="font-semibold">Notes</h4>
-                  <p className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
-                    {selectedClient.notes}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete the client "{selectedClient?.name}"
-              and all associated data. This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <Button
+              type="button"
+              variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700"
               disabled={submitting}
+              className="flex-1 sm:flex-none"
             >
               {submitting ? "Deleting..." : "Delete Client"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
